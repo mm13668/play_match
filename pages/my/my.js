@@ -192,12 +192,40 @@ Page({
     })
   },
 
-  // 关于我们
-  onAbout: function () {
-    wx.showModal({
-      title: '去玩匹配',
-      content: 'AI驱动的双人关系匹配测试\n用AI分析你们的默契指数',
-      showCancel: false
-    })
-  }
-})
+   // 关于我们
+   onAbout: function () {
+     wx.showModal({
+       title: '去玩匹配',
+       content: 'AI驱动的双人关系匹配测试\n用AI分析你们的默契指数',
+       showCancel: false
+     })
+   },
+
+   // 退出登录
+   onLogout: function () {
+     wx.showModal({
+       title: '确认退出',
+       content: '确定要退出登录吗？',
+       success: (res) => {
+         if (res.confirm) {
+           // 清除本地缓存的openid
+           wx.removeStorageSync('openid')
+           // 清除全局的openid和userInfo
+           app.setOpenid(null)
+           app.globalData.userInfo = null
+           // 重置页面状态
+           this.setData({
+             userInfo: null,
+             hasUserInfo: false,
+             totalTests: 0,
+             allRecords: []
+           })
+           wx.showToast({
+             title: '退出成功',
+             icon: 'success'
+           })
+         }
+       }
+     })
+   }
+ })

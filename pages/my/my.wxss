@@ -53,3 +53,8 @@
   color: #999;
   margin-right: 10rpx;
 }
+
+/* 退出登录文字红色 */
+.van-cell[title="退出登录"] .van-cell__title {
+  color: #ff4d4f;
+}

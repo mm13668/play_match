@@ -17,15 +17,16 @@
      </view>
   </view>
 
-  <!-- 功能列表 -->
-  <view class="menu-card card mt-20">
-    <van-cell-group>
-       <van-cell title="我的测试记录" is-link bindclick="goToRecords">
-         <text slot="right-icon" class="count">{{allRecords.length}}</text>
-       </van-cell>
-      <van-cell title="设置" is-link bindclick="onSettings" />
-      <van-cell title="关于我们" is-link bindclick="onAbout" />
-    </van-cell-group>
-  </view>
+   <!-- 功能列表 -->
+   <view class="menu-card card mt-20">
+     <van-cell-group>
+        <van-cell title="我的测试记录" is-link bindclick="goToRecords">
+          <text slot="right-icon" class="count">{{allRecords.length}}</text>
+        </van-cell>
+       <van-cell title="设置" is-link bindclick="onSettings" />
+       <van-cell title="关于我们" is-link bindclick="onAbout" />
+       <van-cell title="退出登录" is-link bindclick="onLogout" wx:if="{{hasUserInfo}}" />
+     </van-cell-group>
+   </view>
 
 </view>
