@@ -79,7 +79,11 @@ Page({
            }
          })
          // 授权后缓存已经和云端同步了，本地剩余 = 本地缓存 - usedTimes = 本地剩余
-         wx.setStorageSync('local_free_times', localRemaining - usedTimes)
+         let localFreeTimes = localRemaining - usedTimes
+         if(localFreeTimes < 0 ){
+          localFreeTimes = 0
+         }
+         wx.setStorageSync('local_free_times', localFreeTimes)
        }
      })
    },

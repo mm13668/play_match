@@ -53,11 +53,13 @@ Page({
           remainingTimes: remaining,
           hasUserInfo: true
         })
+        wx.setStorageSync('local_free_times', remaining)
       } else {
         this.setData({
           remainingTimes: 3,
           hasUserInfo: true
         })
+        wx.setStorageSync('local_free_times', 3)
       }
   }).catch(err => {
         console.error('加载用户信息失败', err)
