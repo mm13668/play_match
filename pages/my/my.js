@@ -51,33 +51,38 @@ Page({
     }
   },
 
-  // 保存用户信息到数据库
-  saveUserInfo: function (userInfo) {
-    const openid = app.getOpenid()
-    const db = wx.cloud.database()
-    // 获取本地缓存次数，新用户要同步已经用掉的次数
-    const localRemaining = wx.getStorageSync('local_free_times') || 3
-    const usedTimes = 3 - localRemaining
-    
-    db.collection('user').where({
-      _openid: openid
-    }).get().then(res => {
-      if (res.data.length === 0) {
-        // 新用户，同步本地已经使用的次数到云端
-        db.collection('user').add({
-          data: {
-            nickname: userInfo.nickName,
-            avatar: userInfo.avatarUrl,
-            create_time: db.serverDate(),
-            total_tests: usedTimes,
-            ad_free_times: 0
-          }
-        })
-        // 授权后缓存已经和云端同步了，清空缓存（缓存只是给未登录用的）
-        wx.setStorageSync('local_free_times', localRemaining - usedTimes)
-      }
-    })
-  },
+   // 保存用户信息到数据库
+   saveUserInfo: function (userInfo) {
+     const openid = app.getOpenid()
+     const db = wx.cloud.database()
+     // 获取本地缓存次数，新用户要同步已经用掉的次数
+     let localRemaining = wx.getStorageSync('local_free_times')
+     if (!localRemaining && localRemaining !== 0) {
+       // 如果 isNaN(localRemaining)，重置为 3
+       localRemaining = 3
+     }
+     const usedTimes = 3 - localRemaining
+     
+     db.collection('user').where({
+       _openid: openid
+     }).get().then(res => {
+       if (res.data.length === 0) {
+         // 新用户，同步本地已经使用掉的次数到云端
+         db.collection('user').add({
+           data: {
+             _openid: openid,
+             nickname: userInfo.nickName,
+             avatar: userInfo.avatarUrl,
+             create_time: db.serverDate(),
+             total_tests: usedTimes,
+             ad_free_times: 0
+           }
+         })
+         // 授权后缓存已经和云端同步了，本地剩余 = 本地缓存 - usedTimes = 本地剩余
+         wx.setStorageSync('local_free_times', localRemaining - usedTimes)
+       }
+     })
+   },
 
   // 加载用户数据
   loadUserData: function () {
