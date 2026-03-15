@@ -1,0 +1,24 @@
+<!--pages/records/records.wxml-->
+<view class="container">
+  <view wx:if="{{allRecords.length > 0}}" class="records-card card">
+    <view 
+      wx:for="{{allRecords}}" 
+      wx:key="_id"
+      class="record-item"
+      bindtap="onRecordTap"
+      data-id="{{item._id}}"
+    >
+      <view class="record-info">
+        <view class="record-names">{{item.person1_name}} & {{item.person2_name}}</view>
+        <view class="record-meta text-gray">
+          {{item.relation_type_text}} · {{item.create_time_format}}
+        </view>
+      </view>
+      <view class="record-score">{{item.match_score}}分</view>
+    </view>
+  </view>
+  
+  <view wx:if="{{allRecords.length === 0 && loading === false}}" class="empty-state">
+    <text>暂无测试记录</text>
+  </view>
+</view>

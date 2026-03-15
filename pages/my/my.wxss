@@ -20,6 +20,13 @@
   margin-right: 24rpx;
 }
 
+.default-avatar {
+  background-color: #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .user-info-text .nickname {
   font-size: 32rpx;
   font-weight: 500;
@@ -45,39 +52,4 @@
   font-size: 26rpx;
   color: #999;
   margin-right: 10rpx;
-}
-
-.records-title {
-  font-size: 32rpx;
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 20rpx;
-}
-
-.record-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20rpx 0;
-  border-bottom: 1rpx solid #f0f0f0;
-}
-
-.record-item:last-child {
-  border-bottom: none;
-}
-
-.record-names {
-  font-size: 30rpx;
-  color: #333;
-  margin-bottom: 6rpx;
-}
-
-.record-meta {
-  font-size: 24rpx;
-}
-
-.record-score {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #FF6B6B;
 }

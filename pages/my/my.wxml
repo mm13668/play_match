@@ -5,43 +5,27 @@
     <view wx:if="{{!hasUserInfo}}" class="login-box">
       <button open-type="getUserInfo" bindgetuserinfo="onGetUserInfo" class="btn-primary">授权登录</button>
     </view>
-    <view wx:if="{{hasUserInfo}}" class="user-info">
-      <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
-      <view class="user-info-text">
-        <view class="nickname">{{userInfo.nickName}}</view>
-        <view class="stats">共测试 {{totalTests}} 次</view>
-      </view>
-    </view>
+     <view wx:if="{{hasUserInfo}}" class="user-info">
+       <view wx:if="{{userInfo && userInfo.avatar}}" class="avatar-wrapper">
+         <image class="avatar" src="{{userInfo.avatar}}"></image>
+       </view>
+       <view wx:else class="avatar default-avatar"></view>
+       <view class="user-info-text">
+         <view class="nickname">{{userInfo.nickName || '微信用户'}}</view>
+         <view class="stats">共测试 {{totalTests}} 次</view>
+       </view>
+     </view>
   </view>
 
   <!-- 功能列表 -->
   <view class="menu-card card mt-20">
     <van-cell-group>
-      <van-cell title="我的测试记录" is-link bindclick="loadAllRecords">
-        <text slot="right-icon" class="count">{{allRecords.length}}</text>
-      </van-cell>
+       <van-cell title="我的测试记录" is-link bindclick="goToRecords">
+         <text slot="right-icon" class="count">{{allRecords.length}}</text>
+       </van-cell>
       <van-cell title="设置" is-link bindclick="onSettings" />
       <van-cell title="关于我们" is-link bindclick="onAbout" />
     </van-cell-group>
   </view>
 
-  <!-- 测试记录列表 -->
-  <view wx:if="{{allRecords.length > 0}}" class="records-card card mt-20">
-    <view class="records-title">所有测试记录</view>
-    <view 
-      wx:for="{{allRecords}}" 
-      wx:key="_id"
-      class="record-item"
-      bindtap="onRecordTap"
-      data-id="{{_id}}"
-    >
-      <view class="record-info">
-        <view class="record-names">{{item.person1_name}} & {{item.person2_name}}</view>
-        <view class="record-meta text-gray">
-          {{item.relation_type_text}} · {{item.create_time_format}}
-        </view>
-      </view>
-      <view class="record-score">{{item.match_score}}分</view>
-    </view>
-  </view>
 </view>

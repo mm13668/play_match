@@ -28,15 +28,39 @@
       />
     </view>
 
-    <view class="relation-select mt-20">
-      <view class="label">关系类型</view>
-      <van-radio-group value="{{relationType}}" bind:change="onRelationChange" class="relation-group">
-        <van-radio name="1">情侣</van-radio>
-        <van-radio name="2">朋友</van-radio>
-        <van-radio name="3">同事</van-radio>
-        <van-radio name="4">家人</van-radio>
-      </van-radio-group>
-    </view>
+     <view class="relation-select mt-20">
+       <view class="label">关系类型</view>
+       <view class="relation-group">
+         <view 
+           class="relation-item {{relationType === '1' ? 'active' : ''}}" 
+           bindtap="selectRelation" 
+           data-value="1"
+         >
+           情侣
+         </view>
+         <view 
+           class="relation-item {{relationType === '2' ? 'active' : ''}}" 
+           bindtap="selectRelation" 
+           data-value="2"
+         >
+           朋友
+         </view>
+         <view 
+           class="relation-item {{relationType === '3' ? 'active' : ''}}" 
+           bindtap="selectRelation" 
+           data-value="3"
+         >
+           同事
+         </view>
+         <view 
+           class="relation-item {{relationType === '4' ? 'active' : ''}}" 
+           bindtap="selectRelation" 
+           data-value="4"
+         >
+           家人
+         </view>
+       </view>
+     </view>
   </view>
 
   <!-- 剩余次数提示 -->

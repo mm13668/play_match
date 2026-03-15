@@ -16,7 +16,7 @@
 }
 
 .relation-select {
-  padding: 20rpx 0;
+  padding: 30rpx 0;
 }
 
 .relation-select .label {
@@ -27,12 +27,34 @@
 
 .relation-group {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  align-items: center;
 }
 
-.relation-group .van-radio {
-  margin-right: 40rpx;
-  margin-bottom: 10rpx;
+.relation-item {
+  flex: 1;
+  text-align: center;
+  line-height: 60rpx;
+  margin: 0 8rpx;
+  border-radius: 8rpx;
+  background-color: #f5f5f5;
+  color: #666;
+  font-size: 28rpx;
+}
+
+.relation-item:first-child {
+  margin-left: 0;
+}
+
+.relation-item:last-child {
+  margin-right: 0;
+}
+
+.relation-item.active {
+  background-color: #FF6B6B;
+  color: #fff;
 }
 
 .history-title {

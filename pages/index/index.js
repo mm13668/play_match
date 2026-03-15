@@ -90,6 +90,13 @@ Page({
     })
   },
 
+  // 点击选择关系类型
+  selectRelation: function(e) {
+    this.setData({
+      relationType: e.currentTarget.dataset.value
+    })
+  },
+
   // 开始测试
   onStartTest: function() {
     const { person1Name, person2Name, remainingTimes } = this.data
@@ -117,6 +124,9 @@ Page({
       })
       return
     }
+
+
+    console.log("relationType",this.data.relationType )
 
     wx.showLoading({
       title: 'AI匹配中...',
@@ -207,10 +217,10 @@ Page({
     })
   },
 
-  // 跳转到我的页面看所有记录
+  // 跳转到我的测试记录页面看所有记录
   onGoMy: function() {
-    wx.switchTab({
-      url: '/pages/my/my'
+    wx.navigateTo({
+      url: '/pages/records/records'
     })
   },
 

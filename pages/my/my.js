@@ -16,7 +16,7 @@ Page({
   onShow: function () {
     if (this.data.hasUserInfo) {
       this.loadUserData()
-      this.loadAllRecords()
+      this.loadAllRecordsCount()
     }
   },
 
@@ -29,14 +29,21 @@ Page({
       app.setOpenid(cachedOpenid)
     }
     
-    if (userInfo && cachedOpenid) {
-      this.setData({
-        userInfo,
-        hasUserInfo: true
-      })
-      this.saveUserInfo(userInfo)
+    // 如果已经有openid，无论是否有用户信息，都展示内容
+    if (cachedOpenid) {
+      if (userInfo) {
+        this.setData({
+          userInfo,
+          hasUserInfo: true
+        })
+      } else {
+        // 有openid但没有用户信息，设置一个默认展示
+        this.setData({
+          hasUserInfo: true
+        })
+      }
       this.loadUserData()
-      this.loadAllRecords()
+      this.loadAllRecordsCount()
     } else if (userInfo && !cachedOpenid) {
       // 如果有用户信息但没有openid，重新调用云函数获取
       this.setData({
@@ -45,6 +52,7 @@ Page({
       })
       this.getOpenIdFromCloud()
     }
+    // 没有openid也没有用户信息，才显示授权按钮
   },
 
   // 获取用户信息
@@ -64,24 +72,29 @@ Page({
     }
   },
   
-  // 调用云函数获取openid
-  getOpenIdFromCloud: function () {
-    wx.cloud.callFunction({
-      name: 'getOpenId',
-      success: res => {
-        console.log('[getOpenId] 云函数调用成功', res)
-        const { openid, appid, unionid } = res.result
-        // 保存到全局变量
-        app.setOpenid(openid)
-        // 保存到本地缓存
-        wx.setStorageSync('openid', openid)
-        console.log('获取openid成功', openid)
-        
-        // 保存到数据库
-        this.saveUserInfo(this.data.userInfo)
-        this.loadUserData()
-        this.loadAllRecords()
-      },
+   // 调用云函数获取openid
+   getOpenIdFromCloud: function () {
+     wx.cloud.callFunction({
+       name: 'getOpenId',
+       success: res => {
+         console.log('[getOpenId] 云函数调用成功', res)
+         const { openid, appid, unionid } = res.result
+         // 保存到全局变量
+         app.setOpenid(openid)
+         // 保存到本地缓存
+         wx.setStorageSync('openid', openid)
+         console.log('获取openid成功', openid)
+         
+         // 确保页面显示用户信息而不是授权按钮
+         this.setData({
+           hasUserInfo: true
+         })
+         
+         // 保存到数据库
+         this.saveUserInfo(this.data.userInfo)
+         this.loadUserData()
+         this.loadAllRecordsCount()
+       },
       fail: err => {
         console.error('[getOpenId] 云函数调用失败', err)
         wx.showToast({
@@ -147,8 +160,8 @@ Page({
     })
   },
 
-  // 加载所有测试记录
-  loadAllRecords: function () {
+  // 加载测试记录数量（用于菜单显示）
+  loadAllRecordsCount: function () {
     const openid = app.getOpenid()
     const db = wx.cloud.database()
 
@@ -156,7 +169,6 @@ Page({
       .where({
         user_openid: openid
       })
-      .orderBy('create_time', 'desc')
       .get()
       .then(res => {
         this.setData({
@@ -165,11 +177,10 @@ Page({
       })
   },
 
-  // 点击记录查看详情
-  onRecordTap: function (e) {
-    const recordId = e.currentTarget.dataset.id
+  // 跳转到我的测试记录页面
+  goToRecords: function () {
     wx.navigateTo({
-      url: `/pages/result/result?recordId=${recordId}`
+      url: '/pages/records/records'
     })
   },
 

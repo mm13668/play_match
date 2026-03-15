@@ -1,0 +1,41 @@
+/* pages/records/records.wxss */
+.records-card {
+  padding: 30rpx;
+}
+
+.record-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.record-item:last-child {
+  border-bottom: none;
+}
+
+.record-names {
+  font-size: 30rpx;
+  color: #333;
+  margin-bottom: 6rpx;
+}
+
+.record-meta {
+  font-size: 24rpx;
+}
+
+.record-score {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #FF6B6B;
+}
+
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 100rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
