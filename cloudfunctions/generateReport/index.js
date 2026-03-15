@@ -135,6 +135,9 @@ exports.main = async (event, context) => {
         isVip = userData.is_vip || false
         adFreeTimes = userData.ad_free_times || 0
       }
+
+      console.log("totalTests",totalTests)
+      console.log("adFreeTimes",adFreeTimes)
       
       const totalAllowed = FREE_GENERATE_LIMIT + adFreeTimes
       // 非VIP且已达到免费次数限制

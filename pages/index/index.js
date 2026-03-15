@@ -8,7 +8,8 @@ Page({
     relationType: '1',
     historyRecords: [],
     remainingTimes: 3,
-    hasUserInfo: false
+    hasUserInfo: false,
+    isVip: false
   },
 
   onLoad: function () {
@@ -25,8 +26,15 @@ Page({
   loadUserInfo: function() {
     const openid = app.getOpenid()
     if (!openid) {
+      // 未授权登录，从缓存读取次数
+      let cached = wx.getStorageSync('local_free_times')
+      if (cached === '' || cached === null || typeof cached === 'undefined') {
+        cached = 3
+      }
+      // 保证cached是数字
+      cached = Number(cached)
       this.setData({
-        remainingTimes: 3,
+        remainingTimes: cached,
         hasUserInfo: false,
         isVip: false
       })
@@ -48,20 +56,29 @@ Page({
           hasUserInfo: true,
           isVip: user.is_vip || false
         })
+        // 同步到缓存
+        wx.setStorageSync('local_free_times', remaining)
       } else {
         this.setData({
           remainingTimes: 3,
           hasUserInfo: true,
           isVip: false
         })
+        wx.setStorageSync('local_free_times', 3)
       }
-  }).catch(err => {
-        console.error('加载用户信息失败', err)
-        this.setData({
-          remainingTimes: 3,
-          isVip: false
-        })
+    }).catch(err => {
+      console.error('加载用户信息失败', err)
+      // 出错了用缓存
+      let cached = wx.getStorageSync('local_free_times')
+      if (cached === '' || cached === null || typeof cached === 'undefined') {
+        cached = 3
+      }
+      cached = Number(cached)
+      this.setData({
+        remainingTimes: cached,
+        isVip: false
       })
+    })
   },
 
   // 输入框变化
@@ -126,6 +143,14 @@ Page({
       success: res => {
         wx.hideLoading()
         if (res.result.success) {
+          // 成功生成后，本地扣减一次
+          if (!this.data.isVip) {
+            const newRemaining = Math.max(0, this.data.remainingTimes - 1)
+            this.setData({
+              remainingTimes: newRemaining
+            })
+            wx.setStorageSync('local_free_times', newRemaining)
+          }
           wx.navigateTo({
             url: `/pages/result/result?recordId=${res.result.recordId}`
           })
@@ -133,16 +158,12 @@ Page({
           if (res.result.code === 'LIMIT_EXCEEDED') {
             wx.showModal({
               title: '免费次数已用完',
-              content: '每位用户最多免费生成3次报告，开通会员即可无限次生成',
-              confirmText: '开通会员',
+              content: '观看广告可以获得更多免费生成机会，快去点击看广告获取吧',
+              confirmText: '去看广告',
               cancelText: '取消',
               success: (modalRes) => {
                 if (modalRes.confirm) {
-                  // 跳转到会员开通页面，后续开发
-                  wx.showToast({
-                    title: '会员功能开发中',
-                    icon: 'none'
-                  })
+                  this.onWatchAd()
                 }
               }
             })
@@ -216,7 +237,21 @@ Page({
       cancelText: '取消',
       success: (res) => {
         if (res.confirm) {
-          // 模拟广告看完，调用云函数
+          const openid = app.getOpenid()
+          if (!openid) {
+            // 未登录，直接本地增加
+            const newRemaining = this.data.remainingTimes + 1
+            this.setData({
+              remainingTimes: newRemaining
+            })
+            wx.setStorageSync('local_free_times', newRemaining)
+            wx.showToast({
+              title: '增加了1次免费机会',
+              icon: 'success'
+            })
+            return
+          }
+          // 已登录，调用云函数
           wx.showLoading({
             title: '处理中...'
           })

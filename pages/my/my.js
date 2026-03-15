@@ -56,22 +56,28 @@ Page({
   saveUserInfo: function (userInfo) {
     const openid = app.getOpenid()
     const db = wx.cloud.database()
-
+    // 获取本地缓存次数，新用户要同步
+    const localTimes = wx.getStorageSync('local_free_times') || 3
+    const usedTimes = 3 - localTimes
+    
     db.collection('user').where({
       _openid: openid
     }).get().then(res => {
       if (res.data.length === 0) {
-        // 新用户
+        // 新用户，加上本地已经用掉的次数
         db.collection('user').add({
           data: {
             nickname: userInfo.nickName,
             avatar: userInfo.avatarUrl,
             create_time: db.serverDate(),
-            total_tests: 0,
+            total_tests: usedTimes,
+            ad_free_times: 0,
             is_vip: false,
             vip_expire_time: null
           }
         })
+        // 授权后清空缓存，因为已经同步到云端
+        wx.setStorageSync('local_free_times', localTimes - usedTimes)
       }
     })
   },
