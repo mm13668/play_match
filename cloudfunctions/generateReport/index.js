@@ -32,7 +32,7 @@ function buildPrompt(person1, person2, relationType) {
   }
 }
 
- 要求：
+要求：
  1. 分数要合理分布，不要总是太高或太低
  2. 语言轻松有趣，符合年轻人说话方式
  3. 内容积极正向，给出建设性建议
@@ -115,14 +115,12 @@ const FREE_GENERATE_LIMIT = 3
 exports.main = async (event, context) => {
   const { person1_name, person2_name, relation_type } = event
   const { OPENID } = cloud.getWXContext()
+  const relationType = relation_type || '1'
 
   try {
     // 检查用户已生成次数
-    let userData = null
     let totalTests = 0
-    let isVip = false
     let adFreeTimes = 0
-    const relationType = relation_type || '1'
     
     try {
       const userRes = await db.collection('user').where({
@@ -130,18 +128,16 @@ exports.main = async (event, context) => {
       }).get()
       
       if (userRes.data.length > 0) {
-        userData = userRes.data[0]
-        totalTests = userData.total_tests || 0
-        isVip = userData.is_vip || false
-        adFreeTimes = userData.ad_free_times || 0
+        const user = userRes.data[0]
+        totalTests = Number(user.total_tests || 0)
+        adFreeTimes = Number(user.ad_free_times || 0)
       }
-
-      console.log("totalTests",totalTests)
-      console.log("adFreeTimes",adFreeTimes)
       
       const totalAllowed = FREE_GENERATE_LIMIT + adFreeTimes
-      // 非VIP且已达到免费次数限制
-      if (!isVip && totalTests >= totalAllowed) {
+      console.log('[check] totalTests=', totalTests, 'totalAllowed=', totalAllowed)
+      
+      // 达到免费次数限制
+      if (totalTests >= totalAllowed) {
         return {
           success: false,
           message: `免费次数已用完\n看广告可以获得更多免费机会`,
@@ -158,9 +154,9 @@ exports.main = async (event, context) => {
     const result = await callDoubao(prompt)
 
     // 保存到数据库
-    // 如果还有免费次数 或者 是VIP，直接解锁完整报告
+    // 如果还有免费次数，直接解锁完整报告
     const totalAllowed = FREE_GENERATE_LIMIT + adFreeTimes
-    const isUnlocked = isVip || totalTests < totalAllowed
+    const isUnlocked = totalTests < totalAllowed
     
     const saveResult = await db.collection('test_record').add({
       data: {
@@ -190,7 +186,7 @@ exports.main = async (event, context) => {
           }
         })
       } else {
-        // 新用户创建记录
+        // 新用户创建记录，保证计数正确：total_tests 已经用掉一次 = 1
         await db.collection('user').add({
           data: {
             _openid: OPENID,
@@ -198,9 +194,7 @@ exports.main = async (event, context) => {
             avatar: '',
             create_time: db.serverDate(),
             total_tests: 1,
-            is_vip: false,
-            ad_free_times: 0,
-            vip_expire_time: null
+            ad_free_times: 0
           }
         })
       }
@@ -214,8 +208,7 @@ exports.main = async (event, context) => {
       success: true,
       recordId: saveResult._id,
       data: result,
-      remaining: remaining >= 0 ? remaining : 0,
-      isVip: isVip
+      remaining: remaining >= 0 ? remaining : 0
     }
   } catch (error) {
     console.error('生成报告失败', error)

@@ -8,8 +8,7 @@ Page({
     relationType: '1',
     historyRecords: [],
     remainingTimes: 3,
-    hasUserInfo: false,
-    isVip: false
+    hasUserInfo: false
   },
 
   onLoad: function () {
@@ -35,8 +34,7 @@ Page({
       cached = Number(cached)
       this.setData({
         remainingTimes: cached,
-        hasUserInfo: false,
-        isVip: false
+        hasUserInfo: false
       })
       return
     }
@@ -53,32 +51,20 @@ Page({
         const remaining = Math.max(0, totalAllowed - total)
         this.setData({
           remainingTimes: remaining,
-          hasUserInfo: true,
-          isVip: user.is_vip || false
+          hasUserInfo: true
         })
-        // 同步到缓存
-        wx.setStorageSync('local_free_times', remaining)
       } else {
         this.setData({
           remainingTimes: 3,
-          hasUserInfo: true,
-          isVip: false
+          hasUserInfo: true
         })
-        wx.setStorageSync('local_free_times', 3)
       }
-    }).catch(err => {
-      console.error('加载用户信息失败', err)
-      // 出错了用缓存
-      let cached = wx.getStorageSync('local_free_times')
-      if (cached === '' || cached === null || typeof cached === 'undefined') {
-        cached = 3
-      }
-      cached = Number(cached)
-      this.setData({
-        remainingTimes: cached,
-        isVip: false
+  }).catch(err => {
+        console.error('加载用户信息失败', err)
+        this.setData({
+          remainingTimes: 3
+        })
       })
-    })
   },
 
   // 输入框变化
@@ -102,7 +88,7 @@ Page({
 
   // 开始测试
   onStartTest: function() {
-    const { person1Name, person2Name, remainingTimes, isVip } = this.data
+    const { person1Name, person2Name, remainingTimes } = this.data
 
     if (!person1Name || !person2Name) {
       wx.showToast({
@@ -113,7 +99,7 @@ Page({
     }
 
     // 本地检查次数，如果没次数直接提示
-    if (!isVip && remainingTimes <= 0) {
+    if (remainingTimes <= 0) {
       wx.showModal({
         title: '免费次数已用完',
         content: '观看广告可以获得更多免费生成机会，快去点击看广告获取吧',
@@ -144,13 +130,11 @@ Page({
         wx.hideLoading()
         if (res.result.success) {
           // 成功生成后，本地扣减一次
-          if (!this.data.isVip) {
-            const newRemaining = Math.max(0, this.data.remainingTimes - 1)
-            this.setData({
-              remainingTimes: newRemaining
-            })
-            wx.setStorageSync('local_free_times', newRemaining)
-          }
+          const newRemaining = Math.max(0, this.data.remainingTimes - 1)
+          this.setData({
+            remainingTimes: newRemaining
+          })
+          wx.setStorageSync('local_free_times', newRemaining)
           wx.navigateTo({
             url: `/pages/result/result?recordId=${res.result.recordId}`
           })
@@ -159,7 +143,7 @@ Page({
             wx.showModal({
               title: '免费次数已用完',
               content: '观看广告可以获得更多免费生成机会，快去点击看广告获取吧',
-              confirmText: '去看广告',
+              confirmText: '看广告',
               cancelText: '取消',
               success: (modalRes) => {
                 if (modalRes.confirm) {
@@ -237,21 +221,7 @@ Page({
       cancelText: '取消',
       success: (res) => {
         if (res.confirm) {
-          const openid = app.getOpenid()
-          if (!openid) {
-            // 未登录，直接本地增加
-            const newRemaining = this.data.remainingTimes + 1
-            this.setData({
-              remainingTimes: newRemaining
-            })
-            wx.setStorageSync('local_free_times', newRemaining)
-            wx.showToast({
-              title: '增加了1次免费机会',
-              icon: 'success'
-            })
-            return
-          }
-          // 已登录，调用云函数
+          // 模拟广告看完，调用云函数
           wx.showLoading({
             title: '处理中...'
           })

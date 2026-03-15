@@ -6,8 +6,6 @@ Page({
     userInfo: null,
     hasUserInfo: false,
     totalTests: 0,
-    isVip: false,
-    vipExpireText: '',
     allRecords: []
   },
 
@@ -30,6 +28,7 @@ Page({
         userInfo,
         hasUserInfo: true
       })
+      this.saveUserInfo(userInfo)
       this.loadUserData()
       this.loadAllRecords()
     }
@@ -56,28 +55,26 @@ Page({
   saveUserInfo: function (userInfo) {
     const openid = app.getOpenid()
     const db = wx.cloud.database()
-    // 获取本地缓存次数，新用户要同步
-    const localTimes = wx.getStorageSync('local_free_times') || 3
-    const usedTimes = 3 - localTimes
+    // 获取本地缓存次数，新用户要同步已经用掉的次数
+    const localRemaining = wx.getStorageSync('local_free_times') || 3
+    const usedTimes = 3 - localRemaining
     
     db.collection('user').where({
       _openid: openid
     }).get().then(res => {
       if (res.data.length === 0) {
-        // 新用户，加上本地已经用掉的次数
+        // 新用户，同步本地已经使用的次数到云端
         db.collection('user').add({
           data: {
             nickname: userInfo.nickName,
             avatar: userInfo.avatarUrl,
             create_time: db.serverDate(),
             total_tests: usedTimes,
-            ad_free_times: 0,
-            is_vip: false,
-            vip_expire_time: null
+            ad_free_times: 0
           }
         })
-        // 授权后清空缓存，因为已经同步到云端
-        wx.setStorageSync('local_free_times', localTimes - usedTimes)
+        // 授权后缓存已经和云端同步了，清空缓存（缓存只是给未登录用的）
+        wx.setStorageSync('local_free_times', localRemaining - usedTimes)
       }
     })
   },
@@ -93,8 +90,7 @@ Page({
       if (res.data.length > 0) {
         const user = res.data[0]
         this.setData({
-          totalTests: user.total_tests || 0,
-          isVip: user.is_vip || false
+          totalTests: user.total_tests || 0
         })
       }
     })
@@ -123,14 +119,6 @@ Page({
     const recordId = e.currentTarget.dataset.id
     wx.navigateTo({
       url: `/pages/result/result?recordId=${recordId}`
-    })
-  },
-
-  // 开通会员
-  onOpenVip: function () {
-    wx.showToast({
-      title: '会员功能开发中',
-      icon: 'none'
     })
   },
 
