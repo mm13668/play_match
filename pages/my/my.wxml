@@ -10,7 +10,6 @@
       <view class="user-info-text">
         <view class="nickname">{{userInfo.nickName}}</view>
         <view class="stats">共测试 {{totalTests}} 次</view>
-        <view wx:if="{{isVip}}" class="vip-tag text-primary">VIP会员</view>
       </view>
     </view>
   </view>
@@ -21,7 +20,6 @@
       <van-cell title="我的测试记录" is-link bindclick="loadAllRecords">
         <text slot="right-icon" class="count">{{allRecords.length}}</text>
       </van-cell>
-      <van-cell title="开通会员" is-link value="{{isVip ? '已开通' : '未开通'}}" bindclick="onOpenVip" />
       <van-cell title="设置" is-link bindclick="onSettings" />
       <van-cell title="关于我们" is-link bindclick="onAbout" />
     </van-cell-group>

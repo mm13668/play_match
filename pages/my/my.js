@@ -23,7 +23,13 @@ Page({
   // 检查登录状态
   checkLogin: function () {
     const userInfo = app.globalData.userInfo
-    if (userInfo) {
+    // 先从本地缓存读取openid
+    const cachedOpenid = wx.getStorageSync('openid')
+    if (cachedOpenid) {
+      app.setOpenid(cachedOpenid)
+    }
+    
+    if (userInfo && cachedOpenid) {
       this.setData({
         userInfo,
         hasUserInfo: true
@@ -31,6 +37,13 @@ Page({
       this.saveUserInfo(userInfo)
       this.loadUserData()
       this.loadAllRecords()
+    } else if (userInfo && !cachedOpenid) {
+      // 如果有用户信息但没有openid，重新调用云函数获取
+      this.setData({
+        userInfo,
+        hasUserInfo: true
+      })
+      this.getOpenIdFromCloud()
     }
   },
 
@@ -44,17 +57,46 @@ Page({
       })
       app.globalData.userInfo = userInfo
 
-      // 保存到数据库
-      this.saveUserInfo(userInfo)
-      this.loadUserData()
-      this.loadAllRecords()
+      console.log("userInfo",userInfo)
+      
+      // 调用云函数获取openid
+      this.getOpenIdFromCloud()
     }
+  },
+  
+  // 调用云函数获取openid
+  getOpenIdFromCloud: function () {
+    wx.cloud.callFunction({
+      name: 'getOpenId',
+      success: res => {
+        console.log('[getOpenId] 云函数调用成功', res)
+        const { openid, appid, unionid } = res.result
+        // 保存到全局变量
+        app.setOpenid(openid)
+        // 保存到本地缓存
+        wx.setStorageSync('openid', openid)
+        console.log('获取openid成功', openid)
+        
+        // 保存到数据库
+        this.saveUserInfo(this.data.userInfo)
+        this.loadUserData()
+        this.loadAllRecords()
+      },
+      fail: err => {
+        console.error('[getOpenId] 云函数调用失败', err)
+        wx.showToast({
+          title: '获取用户信息失败',
+          icon: 'none'
+        })
+      }
+    })
   },
 
    // 保存用户信息到数据库
    saveUserInfo: function (userInfo) {
      const openid = app.getOpenid()
      const db = wx.cloud.database()
+     console.log("openid",openid)
      // 获取本地缓存次数，新用户要同步已经用掉的次数
      let localRemaining = wx.getStorageSync('local_free_times')
      if (!localRemaining && localRemaining !== 0) {

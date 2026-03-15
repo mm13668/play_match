@@ -23,7 +23,8 @@ Page({
 
   // 加载用户信息获取已测试次数
   loadUserInfo: function() {
-    const openid = app.getOpenid()
+    const openid = app.getOpenid() || wx.getStorageSync('openid')
+    console.log("openid",openid)
     if (!openid) {
       // 未授权登录，从缓存读取次数
       let cached = wx.getStorageSync('local_free_times')
@@ -54,6 +55,7 @@ Page({
           hasUserInfo: true
         })
         wx.setStorageSync('local_free_times', remaining)
+        wx.setStorageSync('openid', openid)
       } else {
         this.setData({
           remainingTimes: 3,
