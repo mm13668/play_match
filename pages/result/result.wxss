@@ -1,0 +1,75 @@
+/* pages/result/result.wxss */
+.score-card {
+  padding: 40rpx 30rpx;
+}
+
+.score-label {
+  font-size: 28rpx;
+  color: #999;
+  margin-bottom: 10rpx;
+}
+
+.score-value {
+  font-size: 96rpx;
+  font-weight: bold;
+  color: #FF6B6B;
+  line-height: 1;
+  margin-bottom: 20rpx;
+}
+
+.score-desc {
+  font-size: 32rpx;
+  color: #FF6B6B;
+}
+
+.result-section {
+  margin-bottom: 20rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+.section-content {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+.blur-content {
+  font-size: 48rpx;
+  color: #ccc;
+  letter-spacing: 8rpx;
+  filter: blur(2rpx);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 20rpx;
+}
+
+.action-buttons button {
+  flex: 1;
+}
+
+.btn-secondary {
+  background: white;
+  border: 1rpx solid #FF6B6B;
+  color: #FF6B6B;
+  border-radius: 50rpx;
+  padding: 20rpx 0;
+  font-size: 30rpx;
+}
+
+.btn-secondary::after {
+  border: none;
+}
+
+.loading-container {
+  font-size: 28rpx;
+  color: #999;
+  padding: 100rpx 0;
+}

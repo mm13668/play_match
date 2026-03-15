@@ -1,0 +1,15 @@
+{
+  "name": "play_match",
+  "version": "1.0.0",
+  "description": "小程序名称: 去玩匹配 简称: 去玩 核心定位: AI驱动的双人关系匹配测试，用户输入两个人名字和关系类型，AI生成专属匹配报告（免费看短结果，付费/看广告解锁完整报告） 技术栈: 微信小程序原生 + 微信云开发 + 字节跳动豆包AI API",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vant/weapp": "^1.11.7"
+  },
+  "keywords": []
+}

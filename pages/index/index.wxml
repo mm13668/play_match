@@ -1,0 +1,72 @@
+<!--pages/index/index.wxml-->
+<view class="container">
+  <!-- 品牌区 -->
+  <view class="brand-card card text-center">
+    <view class="brand-title">去玩匹配</view>
+    <view class="brand-slogan text-gray">测一测你们的默契指数</view>
+  </view>
+
+  <!-- 测试表单 -->
+  <view class="form-card card mt-20">
+    <view class="input-item">
+      <van-field
+        value="{{person1Name}}"
+        label="第一个人"
+        placeholder="请输入姓名"
+        bind:input="onPerson1Input"
+        maxlength="10"
+      />
+    </view>
+
+    <view class="input-item mt-20">
+      <van-field
+        value="{{person2Name}}"
+        label="第二个人"
+        placeholder="请输入姓名"
+        bind:input="onPerson2Input"
+        maxlength="10"
+      />
+    </view>
+
+    <view class="relation-select mt-20">
+      <view class="label">关系类型</view>
+      <van-radio-group value="{{relationType}}" bind:change="onRelationChange" class="relation-group">
+        <van-radio name="1">情侣</van-radio>
+        <van-radio name="2">朋友</van-radio>
+        <van-radio name="3">同事</van-radio>
+        <van-radio name="4">家人</van-radio>
+      </van-radio-group>
+    </view>
+  </view>
+
+  <!-- 剩余次数提示 -->
+  <view class="remaining-hint text-center mt-20">
+    <text class="remaining-text" wx:if="{{remainingTimes > 0}}">免费剩余 <text class="remaining-count text-primary">{{remainingTimes}}</text> 次</text>
+    <text class="remaining-text" wx:if="{{remainingTimes <= 0}}">免费次数已用完，开通会员可无限次生成</text>
+  </view>
+
+  <!-- 开始测试按钮 -->
+  <view class="mt-20">
+    <button class="btn-primary" bindtap="onStartTest" disabled="{{remainingTimes <= 0 && !hasUserInfo}}">开始匹配测试</button>
+  </view>
+
+  <!-- 历史记录 -->
+  <view wx:if="{{historyRecords.length > 0}}" class="history-card card mt-30">
+    <view class="history-title">最近测试记录</view>
+    <view class="history-list">
+      <view 
+        wx:for="{{historyRecords}}" 
+        wx:key="_id"
+        class="history-item"
+        bindtap="onHistoryTap"
+        data-id="{{_id}}"
+      >
+        <view class="history-names">{{item.person1_name}} & {{item.person2_name}}</view>
+        <view class="history-score">{{item.match_score}}分</view>
+      </view>
+    </view>
+    <view class="text-center mt-20">
+      <button class="btn-more" bindtap="onGoMy">查看全部</button>
+    </view>
+  </view>
+</view>

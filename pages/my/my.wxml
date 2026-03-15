@@ -1,0 +1,49 @@
+<!--pages/my/my.wxml-->
+<view class="container">
+  <!-- 用户信息区 -->
+  <view class="user-card card">
+    <view wx:if="{{!hasUserInfo}}" class="login-box">
+      <button open-type="getUserInfo" bindgetuserinfo="onGetUserInfo" class="btn-primary">授权登录</button>
+    </view>
+    <view wx:if="{{hasUserInfo}}" class="user-info">
+      <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
+      <view class="user-info-text">
+        <view class="nickname">{{userInfo.nickName}}</view>
+        <view class="stats">共测试 {{totalTests}} 次</view>
+        <view wx:if="{{isVip}}" class="vip-tag text-primary">VIP会员</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能列表 -->
+  <view class="menu-card card mt-20">
+    <van-cell-group>
+      <van-cell title="我的测试记录" is-link bindclick="loadAllRecords">
+        <text slot="right-icon" class="count">{{allRecords.length}}</text>
+      </van-cell>
+      <van-cell title="开通会员" is-link value="{{isVip ? '已开通' : '未开通'}}" bindclick="onOpenVip" />
+      <van-cell title="设置" is-link bindclick="onSettings" />
+      <van-cell title="关于我们" is-link bindclick="onAbout" />
+    </van-cell-group>
+  </view>
+
+  <!-- 测试记录列表 -->
+  <view wx:if="{{allRecords.length > 0}}" class="records-card card mt-20">
+    <view class="records-title">所有测试记录</view>
+    <view 
+      wx:for="{{allRecords}}" 
+      wx:key="_id"
+      class="record-item"
+      bindtap="onRecordTap"
+      data-id="{{_id}}"
+    >
+      <view class="record-info">
+        <view class="record-names">{{item.person1_name}} & {{item.person2_name}}</view>
+        <view class="record-meta text-gray">
+          {{item.relation_type_text}} · {{item.create_time_format}}
+        </view>
+      </view>
+      <view class="record-score">{{item.match_score}}分</view>
+    </view>
+  </view>
+</view>

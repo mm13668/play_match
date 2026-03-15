@@ -1,0 +1,48 @@
+<!--pages/result/result.wxml-->
+<view class="container" wx:if="{{!loading && record}}">
+  <!-- 分数展示区 -->
+  <view class="score-card card text-center">
+    <view class="score-label">匹配得分</view>
+    <view class="score-value">{{record.match_score}}</view>
+    <view class="score-desc text-primary">{{record.short_result}}</view>
+  </view>
+
+  <!-- 完整报告区 -->
+  <view class="result-card card mt-20">
+    <!-- 性格契合度 -->
+    <view class="result-section">
+      <view class="section-title">性格契合度</view>
+      <view class="section-content">{{isUnlocked ? record.full_result.analysis : ''}}</view>
+      <view wx:if="{{!isUnlocked}}" class="blur-content">▓▓▓▓▓▓▓▓▓▓</view>
+    </view>
+
+    <!-- 相处优势与雷区 -->
+    <view class="result-section mt-30">
+      <view class="section-title">相处优势与雷区</view>
+      <view class="section-content">{{isUnlocked ? record.full_result.advantages : ''}}</view>
+      <view wx:if="{{!isUnlocked}}" class="blur-content">▓▓▓▓▓▓▓▓▓▓</view>
+    </view>
+
+    <!-- 关系升温小贴士 -->
+    <view class="result-section mt-30">
+      <view class="section-title">关系升温小贴士</view>
+      <view class="section-content">{{isUnlocked ? record.full_result.tips : ''}}</view>
+      <view wx:if="{{!isUnlocked}}" class="blur-content">▓▓▓▓▓▓▓▓▓▓</view>
+    </view>
+  </view>
+
+  <!-- 解锁按钮 -->
+  <view wx:if="{{!isUnlocked}}" class="mt-20">
+    <button class="btn-primary" bindtap="onUnlock">查看完整报告</button>
+  </view>
+
+  <!-- 操作按钮区 -->
+  <view class="action-buttons mt-20">
+    <button class="btn-secondary" bindtap="onRetest">再测一次</button>
+    <button class="btn-secondary" bindtap="onShare">分享给好友</button>
+  </view>
+</view>
+
+<view wx:if="{{loading}}" class="loading-container text-center mt-30">
+  <text>加载中...</text>
+</view>

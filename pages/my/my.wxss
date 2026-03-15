@@ -1,0 +1,83 @@
+/* pages/my/my.wxss */
+.user-card {
+  padding: 30rpx;
+}
+
+.login-box {
+  text-align: center;
+  padding: 20rpx 0;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 60rpx;
+  margin-right: 24rpx;
+}
+
+.user-info-text .nickname {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.user-info-text .stats {
+  font-size: 26rpx;
+  color: #999;
+}
+
+.vip-tag {
+  display: inline-block;
+  font-size: 22rpx;
+  padding: 4rpx 12rpx;
+  border: 1rpx solid #FF6B6B;
+  border-radius: 20rpx;
+  margin-top: 8rpx;
+}
+
+.count {
+  font-size: 26rpx;
+  color: #999;
+  margin-right: 10rpx;
+}
+
+.records-title {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.record-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.record-item:last-child {
+  border-bottom: none;
+}
+
+.record-names {
+  font-size: 30rpx;
+  color: #333;
+  margin-bottom: 6rpx;
+}
+
+.record-meta {
+  font-size: 24rpx;
+}
+
+.record-score {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #FF6B6B;
+}
