@@ -74,7 +74,7 @@
   padding: 100rpx 0;
 }
 
-/* 分享海报弹窗 */
+/* 分享海报弹窗 - 居中弹窗 */
 .poster-modal {
   position: fixed;
   top: 0;
@@ -91,17 +91,60 @@
 }
 
 .poster-content {
-  background: white;
+  background: #ffffff;
   border-radius: 20rpx;
-  padding: 30rpx;
-  max-width: 90vw;
+  padding: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 85vw;
+  max-height: 80vh;
+  overflow: hidden;
 }
 
 .poster-canvas {
-  border-radius: 10rpx;
-  margin: 0 auto;
+  width: 100%;
+  height: auto;
+  border-radius: 20rpx 20rpx 0 0;
+  background-color: #ffffff;
+  box-sizing: border-box;
 }
 
 .poster-actions {
-  margin-top: 30rpx;
+  width: 100%;
+  padding: 15rpx 15rpx 20rpx;
+  box-sizing: border-box;
+}
+
+.poster-content {
+  background: #ffffff;
+  width: 100%;
+  max-height: 100vh;
+  padding: 20rpx;
+  box-sizing: border-box;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.poster-canvas {
+  flex-shrink: 1;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: calc(100vh - 140rpx - env(safe-area-inset-bottom));
+  border-radius: 10rpx;
+  background-color: #f8f8f8;
+  box-sizing: border-box;
+}
+
+.poster-actions {
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 600px;
+  margin-top: 20rpx;
+  padding-bottom: env(safe-area-inset-bottom);
 }

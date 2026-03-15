@@ -49,7 +49,7 @@
     <canvas 
       canvas-id="posterCanvas" 
       class="poster-canvas"
-      style="width: {{canvasWidth}}px; height: {{canvasHeight}}px;"
+      style="width: 100%; height: {{canvasHeight / canvasWidth * 100}}vw;"
     ></canvas>
     <view class="poster-actions">
       <button class="btn-primary" bindtap="onSavePoster">保存海报到相册</button>

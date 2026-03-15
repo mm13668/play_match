@@ -8,8 +8,9 @@ Page({
     isUnlocked: false,
     loading: true,
     showPoster: false,
-    canvasWidth: 600,
-    canvasHeight: 900,
+    // canvas比例固定 2:3，尺寸根据屏幕自动计算
+    canvasWidth: 500,
+    canvasHeight: 750,
     qrcodeUrl: ''
   },
 
@@ -17,6 +18,14 @@ Page({
     if (options.recordId) {
       this.setData({
         recordId: options.recordId
+      })
+      // 自动计算canvas尺寸，保持 2:3 比例，间距最大化
+      const sysInfo = wx.getSystemInfoSync()
+      const canvasWidth = Math.min(sysInfo.windowWidth * 0.85 - 20, 500)
+      const canvasHeight = canvasWidth * 1.5
+      this.setData({
+        canvasWidth,
+        canvasHeight
       })
       this.loadRecord()
     } else {
@@ -52,7 +61,7 @@ Page({
   onUnlock: function() {
     wx.showActionSheet({
       itemList: ['看广告解锁', '付费解锁（0.99元）'],
-      success: (res) => {
+      success: res => {
         if (res.tapIndex === 0) {
           this.unlockByAd()
         } else {
@@ -128,9 +137,9 @@ Page({
     wx.showLoading({
       title: '生成海报中...'
     })
-    
+
     console.log('开始生成海报', this.data.recordId)
-    
+
     // 1. 调用云函数生成小程序码
     wx.cloud.callFunction({
       name: 'generateShareCode',
@@ -185,100 +194,108 @@ Page({
     })
   },
 
-  // 绘制分享海报
+  // 绘制分享海报 - 按总高度百分比分配，大间距排版
   drawPoster: function() {
     try {
       const { record } = this.data
       const canvasWidth = this.data.canvasWidth
       const canvasHeight = this.data.canvasHeight
-      
-      console.log('1. [drawPoster] 开始绘制', {
+
+      console.log('1. 开始绘制海报', {
         person1: record.person1_name,
         person2: record.person2_name,
         score: record.match_score,
         qrcodeUrl: this.data.qrcodeUrl
       })
-      
-      console.log('2. [drawPoster] 创建canvas context')
+
+      console.log('2. 创建canvas context')
       const ctx = wx.createCanvasContext('posterCanvas')
-      console.log('3. [drawPoster] context创建成功', ctx)
-      
-      // 1. 绘制背景
+      console.log('3. context创建成功', ctx)
+
+      // 1. 背景白色铺满整个canvas
       ctx.setFillStyle('#ffffff')
       ctx.fillRect(0, 0, canvasWidth, canvasHeight)
-      console.log('4. [drawPoster] 背景绘制完成')
-      
-      // 2. 绘制标题栏背景
+
+      // 重新分配整个画布空间百分比：
+      // [头部 20%] - [分数 25%] - [文案 20%] - [二维码 30%] - [底部 5%]
+
+      // ===== 1. 顶部粉色标题栏 占总高度 20% =====
+      const headerHeight = canvasHeight * 0.20
       ctx.setFillStyle('#FF6B6B')
-      ctx.fillRect(0, 0, canvasWidth, 180)
-      console.log('5. [drawPoster] 标题栏背景绘制完成')
-      
-      // 3. 绘制标题文字
+      ctx.fillRect(0, 0, canvasWidth, headerHeight)
+
+      // 标题文字 - 垂直居中
       ctx.setFillStyle('#ffffff')
-      ctx.setFontSize(36)
+      ctx.setFontSize(Math.max(28, canvasWidth / 500 * 28))
       ctx.setTextAlign('center')
-      ctx.fillText('去玩匹配', canvasWidth / 2, 60)
-      console.log('6. [drawPoster] 标题绘制完成')
-      
-      // 4. 绘制姓名
-      ctx.setFontSize(28)
-      ctx.fillText(`${record.person1_name} & ${record.person2_name}`, canvasWidth / 2, 120)
-      console.log('7. [drawPoster] 姓名绘制完成')
-      
-      // 5. 绘制分数
+      ctx.fillText('去玩匹配', canvasWidth / 2, headerHeight * 0.4)
+
+      // 两个人姓名 - 在标题栏下半部分
+      ctx.setFontSize(Math.max(24, canvasWidth / 500 * 24))
+      ctx.fillText(`${record.person1_name} & ${record.person2_name}`, canvasWidth / 2, headerHeight * 0.8)
+
+      console.log('4. 标题姓名绘制完成')
+
+      // ===== 2. 分数区域 占总高度 25% 从 headerHeight 开始 =====
+      // 大分数
+      const scoreStartY = headerHeight
       ctx.setFillStyle('#333333')
-      ctx.setFontSize(80)
+      ctx.setFontSize(canvasWidth * 0.18)
       ctx.setTextAlign('center')
-      ctx.fillText(record.match_score, canvasWidth / 2, 280)
-      ctx.setFontSize(24)
-      ctx.fillText('匹配得分', canvasWidth / 2, 320)
-      console.log('8. [drawPoster] 分数绘制完成')
-      
-      // 6. 绘制结论文案
-      ctx.setFontSize(28)
+      ctx.fillText(record.match_score, canvasWidth / 2, scoreStartY + canvasHeight * 0.12)
+
+      // "匹配得分"文字
+      ctx.setFontSize(Math.max(20, canvasWidth / 500 * 20))
+      ctx.fillText('匹配得分', canvasWidth / 2, scoreStartY + canvasHeight * 0.20)
+
+      console.log('5. 分数绘制完成')
+
+      // ===== 3. 文案区域 占总高度 20% =====
+      const textStartY = headerHeight + canvasHeight * 0.25
+      // 结论短句
+      ctx.setFontSize(Math.max(26, canvasWidth / 500 * 26))
       ctx.setFillStyle('#FF6B6B')
-      ctx.fillText(record.short_result, canvasWidth / 2, 380)
-      console.log('9. [drawPoster] 结论绘制完成')
-      
-      // 7. 吸引人文案
+      ctx.fillText(record.short_result, canvasWidth / 2, textStartY + canvasHeight * 0.08)
+
+      // 提示文案
       ctx.setFillStyle('#666666')
-      ctx.setFontSize(24)
-      ctx.fillText('扫码查看完整分析报告', canvasWidth / 2, 430)
-      console.log('10. [drawPoster] 吸引人文案绘制完成')
-      
-      // 8. 绘制小程序码 - 直接用临时文件路径
-      const qrcodeSize = 280
+      ctx.setFontSize(Math.max(18, canvasWidth / 500 * 18))
+      ctx.fillText('扫码查看完整分析报告', canvasWidth / 2, textStartY + canvasHeight * 0.16)
+
+      console.log('6. 文案绘制完成')
+
+      // ===== 4. 二维码区域 占总高度 30% =====
+      const qrcodeStartY = headerHeight + canvasHeight * 0.45
+      const qrcodeSize = Math.min(canvasWidth * 0.5, canvasHeight * 0.28)
       const qrcodeX = (canvasWidth - qrcodeSize) / 2
-      console.log('11. [drawPoster] 开始绘制二维码', this.data.qrcodeUrl)
-      ctx.drawImage(this.data.qrcodeUrl, qrcodeX, 480, qrcodeSize, qrcodeSize)
-      console.log('12. [drawPoster] 二维码绘制完成')
-      
-      // 9. 底部提示
+      ctx.drawImage(this.data.qrcodeUrl, qrcodeX, qrcodeStartY + canvasHeight * 0.02, qrcodeSize, qrcodeSize)
+
+      // 5. 底部提示 占总高度 5% =====
       ctx.setFillStyle('#999999')
-      ctx.setFontSize(20)
-      ctx.fillText('长按识别小程序码，快来测试吧', canvasWidth / 2, 790)
-      console.log('13. [drawPoster] 底部提示绘制完成')
-      
-      console.log('14. [drawPoster] 开始调用ctx.draw()')
+      ctx.setFontSize(Math.max(16, canvasWidth / 500 * 16))
+      ctx.fillText('长按识别小程序码，快来测试吧', canvasWidth / 2, qrcodeStartY + qrcodeSize + canvasHeight * 0.04)
+
+      console.log('7. 二维码绘制完成')
+
       ctx.draw()
-      console.log('15. [drawPoster] ctx.draw 已调用')
-      
-      // 直接设置弹窗显示，不管回调
+      console.log('8. ctx.draw 调用完成')
+
+      // 延迟显示弹窗
       setTimeout(() => {
-        console.log('16. [drawPoster] setTimeout 执行，隐藏loading显示弹窗')
         try {
+          console.log('9. 显示弹窗')
           wx.hideLoading()
           this.setData({
             showPoster: true
           })
-          console.log('17. [drawPoster] 海报绘制完成！showPoster=', this.data.showPoster)
+          console.log('10. 海报绘制完成')
         } catch (drawErr) {
-          console.error('18. [drawPoster] 完成异常', drawErr)
+          console.error('绘制完成回调异常', drawErr)
           wx.hideLoading()
         }
       }, 100)
     } catch (err) {
-      console.error('0. [drawPoster] 顶级捕获异常', err)
+      console.error('顶级捕获异常', err)
       wx.hideLoading()
       wx.showToast({
         title: '绘制海报失败',
