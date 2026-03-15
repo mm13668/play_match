@@ -83,13 +83,13 @@
   <view wx:if="{{historyRecords.length > 0}}" class="history-card card mt-30">
     <view class="history-title">最近测试记录</view>
     <view class="history-list">
-      <view 
-        wx:for="{{historyRecords}}" 
-        wx:key="_id"
-        class="history-item"
-        bindtap="onHistoryTap"
-        data-id="{{_id}}"
-      >
+       <view 
+         wx:for="{{historyRecords}}" 
+         wx:key="_id"
+         class="history-item"
+         bindtap="onHistoryTap"
+         data-id="{{item._id}}"
+       >
         <view class="history-names">{{item.person1_name}} & {{item.person2_name}}</view>
         <view class="history-score">{{item.match_score}}分</view>
       </view>
