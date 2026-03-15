@@ -1,5 +1,6 @@
 # 云函数配置文件（包含API Key，需要忽略）
 cloudfunctions/**/config.js
+cloudfunctions/generateReport/config.js
 
 # Node dependencies
 node_modules/
