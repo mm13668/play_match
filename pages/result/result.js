@@ -192,32 +192,38 @@ Page({
       const canvasWidth = this.data.canvasWidth
       const canvasHeight = this.data.canvasHeight
       
-      console.log('开始绘制海报', {
+      console.log('1. [drawPoster] 开始绘制', {
         person1: record.person1_name,
         person2: record.person2_name,
         score: record.match_score,
         qrcodeUrl: this.data.qrcodeUrl
       })
       
+      console.log('2. [drawPoster] 创建canvas context')
       const ctx = wx.createCanvasContext('posterCanvas')
+      console.log('3. [drawPoster] context创建成功', ctx)
       
       // 1. 绘制背景
       ctx.setFillStyle('#ffffff')
       ctx.fillRect(0, 0, canvasWidth, canvasHeight)
+      console.log('4. [drawPoster] 背景绘制完成')
       
       // 2. 绘制标题栏背景
       ctx.setFillStyle('#FF6B6B')
       ctx.fillRect(0, 0, canvasWidth, 180)
+      console.log('5. [drawPoster] 标题栏背景绘制完成')
       
       // 3. 绘制标题文字
       ctx.setFillStyle('#ffffff')
       ctx.setFontSize(36)
       ctx.setTextAlign('center')
       ctx.fillText('去玩匹配', canvasWidth / 2, 60)
+      console.log('6. [drawPoster] 标题绘制完成')
       
       // 4. 绘制姓名
       ctx.setFontSize(28)
       ctx.fillText(`${record.person1_name} & ${record.person2_name}`, canvasWidth / 2, 120)
+      console.log('7. [drawPoster] 姓名绘制完成')
       
       // 5. 绘制分数
       ctx.setFillStyle('#333333')
@@ -226,36 +232,53 @@ Page({
       ctx.fillText(record.match_score, canvasWidth / 2, 280)
       ctx.setFontSize(24)
       ctx.fillText('匹配得分', canvasWidth / 2, 320)
+      console.log('8. [drawPoster] 分数绘制完成')
       
       // 6. 绘制结论文案
       ctx.setFontSize(28)
       ctx.setFillStyle('#FF6B6B')
       ctx.fillText(record.short_result, canvasWidth / 2, 380)
+      console.log('9. [drawPoster] 结论绘制完成')
       
       // 7. 吸引人文案
       ctx.setFillStyle('#666666')
       ctx.setFontSize(24)
       ctx.fillText('扫码查看完整分析报告', canvasWidth / 2, 430)
+      console.log('10. [drawPoster] 吸引人文案绘制完成')
       
-      // 8. 绘制小程序码 - qrcodeUrl已经是临时文件，不需要重复下载
+      // 8. 绘制小程序码 - 直接用临时文件路径
       const qrcodeSize = 280
       const qrcodeX = (canvasWidth - qrcodeSize) / 2
+      console.log('11. [drawPoster] 开始绘制二维码', this.data.qrcodeUrl)
       ctx.drawImage(this.data.qrcodeUrl, qrcodeX, 480, qrcodeSize, qrcodeSize)
+      console.log('12. [drawPoster] 二维码绘制完成')
       
       // 9. 底部提示
       ctx.setFillStyle('#999999')
       ctx.setFontSize(20)
       ctx.fillText('长按识别小程序码，快来测试吧', canvasWidth / 2, 790)
+      console.log('13. [drawPoster] 底部提示绘制完成')
       
-      // 完成绘制
-      ctx.draw(() => {
-        wx.hideLoading()
-        this.setData({
-          showPoster: true
-        })
-        console.log('海报绘制完成')
-      })
+      console.log('14. [drawPoster] 开始调用ctx.draw()')
+      ctx.draw()
+      console.log('15. [drawPoster] ctx.draw 已调用')
+      
+      // 直接设置弹窗显示，不管回调
+      setTimeout(() => {
+        console.log('16. [drawPoster] setTimeout 执行，隐藏loading显示弹窗')
+        try {
+          wx.hideLoading()
+          this.setData({
+            showPoster: true
+          })
+          console.log('17. [drawPoster] 海报绘制完成！showPoster=', this.data.showPoster)
+        } catch (drawErr) {
+          console.error('18. [drawPoster] 完成异常', drawErr)
+          wx.hideLoading()
+        }
+      }, 100)
     } catch (err) {
+      console.error('0. [drawPoster] 顶级捕获异常', err)
       wx.hideLoading()
       wx.showToast({
         title: '绘制海报失败',
