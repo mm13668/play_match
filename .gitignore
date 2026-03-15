@@ -1,0 +1,28 @@
+# 云函数配置文件（包含API Key，需要忽略）
+cloudfunctions/**/config.js
+
+# Node dependencies
+node_modules/
+miniprogram_npm/
+
+# Python virtualenv
+venv/
+generate_icons.py
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Temporary
+*.tmp
+*.log
+
+# Baoyu skills
+.baoyu-skills/

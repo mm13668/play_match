@@ -98,3 +98,18 @@
   opacity: 0.5;
 }
 
+.btn-ad {
+  background: none;
+  border: 1rpx solid #FF6B6B;
+  color: #FF6B6B;
+  border-radius: 50rpx;
+  padding: 10rpx 30rpx;
+  font-size: 26rpx;
+  line-height: 1;
+  display: inline-block;
+}
+
+.btn-ad::after {
+  border: none;
+}
+

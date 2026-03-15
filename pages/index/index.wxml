@@ -42,12 +42,17 @@
   <!-- 剩余次数提示 -->
   <view class="remaining-hint text-center mt-20">
     <text class="remaining-text" wx:if="{{remainingTimes > 0}}">免费剩余 <text class="remaining-count text-primary">{{remainingTimes}}</text> 次</text>
-    <text class="remaining-text" wx:if="{{remainingTimes <= 0}}">免费次数已用完，开通会员可无限次生成</text>
+    <text class="remaining-text" wx:if="{{remainingTimes <= 0 && !isVip}}">免费次数已用完</text>
+  </view>
+  
+  <!-- 看广告增加次数 -->
+  <view wx:if="{{remainingTimes <= 0 && !isVip}}" class="text-center mt-10">
+    <button class="btn-ad" bindtap="onWatchAd">看广告获取免费次数</button>
   </view>
 
   <!-- 开始测试按钮 -->
-  <view class="mt-20">
-    <button class="btn-primary" bindtap="onStartTest" disabled="{{remainingTimes <= 0 && !hasUserInfo}}">开始匹配测试</button>
+  <view class="mt-10">
+    <button class="btn-primary" bindtap="onStartTest" disabled="{{remainingTimes <= 0 && !isVip}}">开始匹配测试</button>
   </view>
 
   <!-- 历史记录 -->

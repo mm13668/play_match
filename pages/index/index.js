@@ -27,7 +27,8 @@ Page({
     if (!openid) {
       this.setData({
         remainingTimes: 3,
-        hasUserInfo: false
+        hasUserInfo: false,
+        isVip: false
       })
       return
     }
@@ -39,23 +40,28 @@ Page({
       if (res.data.length > 0) {
         const user = res.data[0]
         const total = user.total_tests || 0
-        const remaining = Math.max(0, 3 - total)
+        const adFreeTimes = user.ad_free_times || 0
+        const totalAllowed = 3 + adFreeTimes
+        const remaining = Math.max(0, totalAllowed - total)
         this.setData({
           remainingTimes: remaining,
-          hasUserInfo: true
+          hasUserInfo: true,
+          isVip: user.is_vip || false
         })
       } else {
         this.setData({
           remainingTimes: 3,
-          hasUserInfo: true
+          hasUserInfo: true,
+          isVip: false
         })
       }
-    }).catch(err => {
-      console.error('加载用户信息失败', err)
-      this.setData({
-        remainingTimes: 3
+  }).catch(err => {
+        console.error('加载用户信息失败', err)
+        this.setData({
+          remainingTimes: 3,
+          isVip: false
+        })
       })
-    })
   },
 
   // 输入框变化
@@ -79,12 +85,28 @@ Page({
 
   // 开始测试
   onStartTest: function() {
-    const { person1Name, person2Name } = this.data
+    const { person1Name, person2Name, remainingTimes, isVip } = this.data
 
     if (!person1Name || !person2Name) {
       wx.showToast({
         title: '请填写两个人的姓名',
         icon: 'none'
+      })
+      return
+    }
+
+    // 本地检查次数，如果没次数直接提示
+    if (!isVip && remainingTimes <= 0) {
+      wx.showModal({
+        title: '免费次数已用完',
+        content: '观看广告可以获得更多免费生成机会，快去点击看广告获取吧',
+        confirmText: '去看广告',
+        cancelText: '取消',
+        success: (res) => {
+          if (res.confirm) {
+            this.onWatchAd()
+          }
+        }
       })
       return
     }
@@ -180,6 +202,51 @@ Page({
   onGoMy: function() {
     wx.switchTab({
       url: '/pages/my/my'
+    })
+  },
+
+  // 看广告增加免费次数
+  onWatchAd: function() {
+    // 这里后续接入流量主激励视频广告
+    // 目前先占位，广告看完调用云函数增加次数
+    wx.showModal({
+      title: '看广告得次数',
+      content: '观看激励视频广告后可获得1次免费生成机会，确定继续吗？',
+      confirmText: '观看广告',
+      cancelText: '取消',
+      success: (res) => {
+        if (res.confirm) {
+          // 模拟广告看完，调用云函数
+          wx.showLoading({
+            title: '处理中...'
+          })
+          wx.cloud.callFunction({
+            name: 'addFreeTimes',
+            success: res => {
+              wx.hideLoading()
+              if (res.result.success) {
+                wx.showToast({
+                  title: res.result.message,
+                  icon: 'success'
+                })
+                this.loadUserInfo()
+              } else {
+                wx.showToast({
+                  title: res.result.message || '操作失败',
+                  icon: 'none'
+                })
+              }
+            },
+            fail: err => {
+              wx.hideLoading()
+              wx.showToast({
+                title: '网络错误',
+                icon: 'none'
+              })
+            }
+          })
+        }
+      }
     })
   }
 })

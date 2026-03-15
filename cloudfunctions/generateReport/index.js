@@ -32,7 +32,7 @@ function buildPrompt(person1, person2, relationType) {
   }
 }
 
-要求：
+ 要求：
  1. 分数要合理分布，不要总是太高或太低
  2. 语言轻松有趣，符合年轻人说话方式
  3. 内容积极正向，给出建设性建议
@@ -121,6 +121,8 @@ exports.main = async (event, context) => {
     let userData = null
     let totalTests = 0
     let isVip = false
+    let adFreeTimes = 0
+    const relationType = relation_type || '1'
     
     try {
       const userRes = await db.collection('user').where({
@@ -131,13 +133,15 @@ exports.main = async (event, context) => {
         userData = userRes.data[0]
         totalTests = userData.total_tests || 0
         isVip = userData.is_vip || false
+        adFreeTimes = userData.ad_free_times || 0
       }
       
+      const totalAllowed = FREE_GENERATE_LIMIT + adFreeTimes
       // 非VIP且已达到免费次数限制
-      if (!isVip && totalTests >= FREE_GENERATE_LIMIT) {
+      if (!isVip && totalTests >= totalAllowed) {
         return {
           success: false,
-          message: `免费次数已用完\n每人最多免费生成${FREE_GENERATE_LIMIT}次报告，请开通会员`,
+          message: `免费次数已用完\n看广告可以获得更多免费机会`,
           code: 'LIMIT_EXCEEDED'
         }
       }
@@ -147,20 +151,24 @@ exports.main = async (event, context) => {
     }
 
     // 构造prompt调用AI
-    const prompt = buildPrompt(person1_name, person2_name, relation_type)
+    const prompt = buildPrompt(person1_name, person2_name, relationType)
     const result = await callDoubao(prompt)
 
     // 保存到数据库
+    // 如果还有免费次数 或者 是VIP，直接解锁完整报告
+    const totalAllowed = FREE_GENERATE_LIMIT + adFreeTimes
+    const isUnlocked = isVip || totalTests < totalAllowed
+    
     const saveResult = await db.collection('test_record').add({
       data: {
         user_openid: OPENID,
         person1_name,
         person2_name,
-        relation_type: parseInt(relation_type),
+        relation_type: parseInt(relationType),
         match_score: result.score,
         short_result: result.short_result,
         full_result: result.full_result,
-        is_unlocked: (!isVip && totalTests < FREE_GENERATE_LIMIT) ? false : true,
+        is_unlocked: isUnlocked,
         create_time: db.serverDate()
       }
     })
@@ -188,6 +196,7 @@ exports.main = async (event, context) => {
             create_time: db.serverDate(),
             total_tests: 1,
             is_vip: false,
+            ad_free_times: 0,
             vip_expire_time: null
           }
         })
@@ -196,7 +205,7 @@ exports.main = async (event, context) => {
       console.error('更新用户次数失败', e)
     }
 
-    const remaining = FREE_GENERATE_LIMIT - (totalTests + 1)
+    const remaining = (FREE_GENERATE_LIMIT + adFreeTimes) - (totalTests + 1)
     
     return {
       success: true,
