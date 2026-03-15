@@ -11,7 +11,14 @@ Page({
     hasUserInfo: false
   },
 
-  onLoad: function () {
+  onLoad: function (options) {
+    // 检查是否从分享海报进来，如果是则给分享者增加次数
+    // 使用短码方式，scene只放6位短码，查询数据库获取分享者openid
+    const shareCode = options.scene || options[0]
+    if (shareCode && shareCode.length === 6) {
+      // 通过短码查询分享者openid
+      this.getShareOpenidByCode(shareCode)
+    }
     this.loadUserInfo()
     this.loadHistoryRecords()
   },
@@ -264,8 +271,62 @@ Page({
               })
             }
           })
-        }
-      }
-    })
-  }
-})
+         }
+       }
+     })
+   },
+
+   // 通过短码查询分享者openid
+   getShareOpenidByCode: function(code) {
+     const currentOpenid = app.getOpenid() || wx.getStorageSync('openid')
+     if (!currentOpenid) {
+       // 当前用户未登录，不处理奖励
+       return
+     }
+     
+     const db = wx.cloud.database()
+     db.collection('share_codes')
+       .where({
+         code: code
+       })
+       .get()
+       .then(res => {
+         if (res.data.length > 0) {
+           const shareInfo = res.data[0]
+           const shareOpenid = shareInfo.share_openid
+           
+           // 不能给自己增加，分享者自己点击不算
+           if (currentOpenid !== shareOpenid) {
+             this.handleShareInvite(shareOpenid)
+           }
+         }
+       })
+       .catch(err => {
+         console.error('查询分享码失败', err)
+       })
+   },
+
+   // 处理分享邀请：好友通过分享进入，给分享者增加一次免费机会
+   handleShareInvite: function(shareOpenid) {
+     // 调用云函数给分享者增加一次免费机会
+     wx.cloud.callFunction({
+       name: 'addFreeTimes',
+       data: {
+         targetOpenid: shareOpenid,
+         isShareReward: true
+       },
+       success: res => {
+         console.log('分享奖励发放成功', res.result)
+         wx.showToast({
+           title: '感谢支持分享者，已发放奖励',
+           icon: 'success',
+           duration: 2000
+         })
+       },
+       fail: err => {
+         console.error('分享奖励发放失败', err)
+       }
+     })
+   }
+ })
+

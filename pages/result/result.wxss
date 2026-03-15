@@ -73,3 +73,35 @@
   color: #999;
   padding: 100rpx 0;
 }
+
+/* 分享海报弹窗 */
+.poster-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 30rpx;
+  box-sizing: border-box;
+}
+
+.poster-content {
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  max-width: 90vw;
+}
+
+.poster-canvas {
+  border-radius: 10rpx;
+  margin: 0 auto;
+}
+
+.poster-actions {
+  margin-top: 30rpx;
+}

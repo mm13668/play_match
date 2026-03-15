@@ -36,10 +36,25 @@
     <button class="btn-primary" bindtap="onUnlock">查看完整报告</button>
   </view>
 
-  <!-- 操作按钮区 -->
-  <view class="action-buttons mt-20">
-    <button class="btn-secondary" bindtap="onRetest">再测一次</button>
-    <button class="btn-secondary" bindtap="onShare">分享给好友</button>
+   <!-- 操作按钮区 -->
+   <view class="action-buttons mt-20">
+     <button class="btn-secondary" bindtap="onRetest">再测一次</button>
+     <button class="btn-secondary" bindtap="onShare">分享给好友</button>
+   </view>
+</view>
+
+<!-- 分享海报弹出层 -->
+<view wx:if="{{showPoster}}" class="poster-modal">
+  <view class="poster-content">
+    <canvas 
+      canvas-id="posterCanvas" 
+      class="poster-canvas"
+      style="width: {{canvasWidth}}px; height: {{canvasHeight}}px;"
+    ></canvas>
+    <view class="poster-actions">
+      <button class="btn-primary" bindtap="onSavePoster">保存海报到相册</button>
+      <button class="btn-secondary mt-10" bindtap="onClosePoster">取消</button>
+    </view>
   </view>
 </view>
 

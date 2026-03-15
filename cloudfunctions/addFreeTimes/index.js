@@ -11,11 +11,49 @@ const db = cloud.database()
 const ADD_TIMES = 1
 
 exports.main = async (event, context) => {
+  // 如果是分享奖励，使用指定的targetOpenid
+  let targetOpenid = event.targetOpenid
   const { OPENID } = cloud.getWXContext()
+  
+  if (!targetOpenid) {
+    // 不是分享奖励，使用当前调用者openid（看广告情况）
+    targetOpenid = OPENID
+  }
+
+  // 分享奖励一天一个分享者只能获得一次奖励，防止刷次数
+  if (event.isShareReward) {
+    // 查询今天是否已经获得过奖励
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const shareCheck = await db.collection('share_rewards')
+      .where({
+        share_openid: targetOpenid,
+        invite_openid: OPENID,
+        create_time: db.command.gte(today)
+      }).get()
+    
+    // 已经奖励过了，不再奖励
+    if (shareCheck.data.length > 0) {
+      return {
+        success: true,
+        added: 0,
+        message: '今日已奖励过了'
+      }
+    }
+    
+    // 记录奖励
+    await db.collection('share_rewards').add({
+      data: {
+        share_openid: targetOpenid,
+        invite_openid: OPENID,
+        create_time: new Date()
+      }
+    })
+  }
 
   try {
     const userRes = await db.collection('user').where({
-      _openid: OPENID
+      _openid: targetOpenid
     }).get()
 
     if (userRes.data.length > 0) {
