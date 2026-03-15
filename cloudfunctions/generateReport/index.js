@@ -149,6 +149,87 @@ exports.main = async (event, context) => {
       // 查询失败不阻止，继续生成
     }
 
+    // ===== 新增：检查是否已经生成过相同测试，直接返回结果 =====
+    // 统一姓名大小写并去除两边空格
+    const p1 = person1_name.trim().toLowerCase()
+    const p2 = person2_name.trim().toLowerCase()
+    const relationNum = parseInt(relationType)
+    // 查询已有记录
+    try {
+      // 先查询AB顺序，因为云开发不支持复杂$or查询，分开查询
+      const existRes = await db.collection('test_record')
+        .where({
+          user_openid: OPENID,
+          relation_type: relationNum
+        })
+        .get()
+      
+      let existRecord = null
+      // 在内存中过滤匹配姓名的记录（大小写不敏感）
+      if (existRes.data.length > 0) {
+        existRecord = existRes.data.find(item => {
+          const ip1 = item.person1_name.trim().toLowerCase()
+          const ip2 = item.person2_name.trim().toLowerCase()
+          // 匹配正序AB 或者反序BA
+          return (ip1 === p1 && ip2 === p2) || (ip1 === p2 && ip2 === p1)
+        })
+      }
+
+      // 如果找到了已有记录，直接返回，不调用AI
+      if (existRecord) {
+        console.log('[缓存命中]找到已有记录，直接返回', existRecord._id)
+        const result = {
+          score: existRecord.match_score,
+          short_result: existRecord.short_result,
+          full_result: existRecord.full_result
+        }
+
+        // 仍然要增加次数吗？用户这次确实重新生成了，还是要算次数
+        // 更新用户测试次数
+        try {
+          const userRes = await db.collection('user').where({
+            _openid: OPENID
+          }).get()
+
+          if (userRes.data.length > 0) {
+            const user = userRes.data[0]
+            await db.collection('user').doc(user._id).update({
+              data: {
+                total_tests: (user.total_tests || 0) + 1
+              }
+            })
+          } else {
+            await db.collection('user').add({
+              data: {
+                _openid: OPENID,
+                nickname: '',
+                avatar: '',
+                create_time: db.serverDate(),
+                total_tests: 1,
+                ad_free_times: 0
+              }
+            })
+          }
+        } catch (e) {
+          console.error('更新用户次数失败', e)
+        }
+
+        const totalAllowed = FREE_GENERATE_LIMIT + adFreeTimes
+        const remaining = totalAllowed - (totalTests + 1)
+
+        return {
+          success: true,
+          recordId: existRecord._id,
+          data: result,
+          cached: true,
+          remaining: remaining >= 0 ? remaining : 0
+        }
+      }
+    } catch (cacheError) {
+      console.error('查询缓存失败，继续调用AI', cacheError)
+    }
+    // ===== 缓存检查结束 =====
+
     // 构造prompt调用AI
     const prompt = buildPrompt(person1_name, person2_name, relationType)
     const result = await callDoubao(prompt)
