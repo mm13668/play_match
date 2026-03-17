@@ -60,14 +60,14 @@ exports.main = async (event, context) => {
       const user = userRes.data[0]
       
       // 用户存在，增加免费次数
-      // 这里total_tests统计已使用次数，不存剩余次数。剩余次数 = 3 + 广告增加次数 - total_tests
-      // 所以只需要用户是non-vip，看广告不影响total_tests，只增加可允许次数
-      // 方案：给用户添加ad_free_times字段，默认是0，每看一次+1
-      const currentAdTimes = user.ad_free_times || 0
+      // 这里total_used统计已使用次数，不存剩余次数。剩余次数 = 3 + 广告增加次数 - total_used
+      // 所以只需要用户是non-vip，看广告不影响total_used，只增加可允许次数
+      // 方案：给用户添加total_shells字段，默认是0，每看一次+1
+      const currentAdTimes = user.total_shells || 0
       
       await db.collection('user').doc(user._id).update({
         data: {
-          ad_free_times: currentAdTimes + ADD_TIMES
+          total_shells: currentAdTimes + ADD_TIMES
         }
       })
 

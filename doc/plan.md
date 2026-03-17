@@ -19,7 +19,7 @@ OpenCode 执行提示词:
 OpenCode 执行提示词:
 
 基于AI生成双人关系匹配测试场景，帮我完成：
-1. 设计 user 集合数据结构：openid、nickname、avatar、create_time、total_tests、is_vip、vip_expire_time
+1. 设计 user 集合数据结构：openid、nickname、avatar、create_time、total_used、is_vip、vip_expire_time
 2. 设计 test_record 集合数据结构：id、user_openid、person1_name、person2_name、relation_type、match_score、short_result、full_result、is_unlocked、create_time
 3. 设计 order 集合数据结构：order_id、user_openid、amount、product_type、pay_status、pay_time、transaction_id
 4. 编写 config.js 配置文件，留出豆包API_KEY配置位置

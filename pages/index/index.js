@@ -53,8 +53,8 @@ Page({
     }).get().then(res => {
       if (res.data.length > 0) {
         const user = res.data[0]
-        const total = user.total_tests || 0
-        const adFreeTimes = user.ad_free_times || 0
+        const total = user.total_used || 0
+        const adFreeTimes = user.total_shells || 0
         const totalAllowed = 3 + adFreeTimes
         const remaining = Math.max(0, totalAllowed - total)
         this.setData({

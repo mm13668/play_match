@@ -119,7 +119,7 @@ exports.main = async (event, context) => {
 
   try {
     // 检查用户已生成次数
-    let totalTests = 0
+    let totalUsed = 0
     let adFreeTimes = 0
     
     try {
@@ -129,15 +129,15 @@ exports.main = async (event, context) => {
       
       if (userRes.data.length > 0) {
         const user = userRes.data[0]
-        totalTests = Number(user.total_tests || 0)
-        adFreeTimes = Number(user.ad_free_times || 0)
+        totalUsed = Number(user.total_used || 0)
+        adFreeTimes = Number(user.total_shells || 0)
       }
       
       const totalAllowed = FREE_GENERATE_LIMIT + adFreeTimes
-      console.log('[check] totalTests=', totalTests, 'totalAllowed=', totalAllowed)
+      console.log('[check] totalUsed=', totalUsed, 'totalAllowed=', totalAllowed)
       
       // 达到免费次数限制
-      if (totalTests >= totalAllowed) {
+      if (totalUsed >= totalAllowed) {
         return {
           success: false,
           message: `免费次数已用完\n看广告可以获得更多免费机会`,
@@ -195,7 +195,7 @@ exports.main = async (event, context) => {
             const user = userRes.data[0]
             await db.collection('user').doc(user._id).update({
               data: {
-                total_tests: (user.total_tests || 0) + 1
+                total_used: (user.total_used || 0) + 1
               }
             })
           } else {
@@ -205,8 +205,8 @@ exports.main = async (event, context) => {
                 nickname: '',
                 avatar: '',
                 create_time: db.serverDate(),
-                total_tests: 1,
-                ad_free_times: 0
+                total_used: 1,
+                total_shells: 0
               }
             })
           }
@@ -215,7 +215,7 @@ exports.main = async (event, context) => {
         }
 
         const totalAllowed = FREE_GENERATE_LIMIT + adFreeTimes
-        const remaining = totalAllowed - (totalTests + 1)
+        const remaining = totalAllowed - (totalUsed + 1)
 
         return {
           success: true,
@@ -237,7 +237,7 @@ exports.main = async (event, context) => {
     // 保存到数据库
     // 如果还有免费次数，直接解锁完整报告
     const totalAllowed = FREE_GENERATE_LIMIT + adFreeTimes
-    const isUnlocked = totalTests < totalAllowed
+    const isUnlocked = totalUsed < totalAllowed
     
     const saveResult = await db.collection('test_record').add({
       data: {
@@ -263,19 +263,19 @@ exports.main = async (event, context) => {
         const user = userRes.data[0]
         await db.collection('user').doc(user._id).update({
           data: {
-            total_tests: (user.total_tests || 0) + 1
+            total_used: (user.total_used || 0) + 1
           }
         })
       } else {
-        // 新用户创建记录，保证计数正确：total_tests 已经用掉一次 = 1
+        // 新用户创建记录，保证计数正确：total_used 已经用掉一次 = 1
         await db.collection('user').add({
           data: {
             _openid: OPENID,
             nickname: '',
             avatar: '',
             create_time: db.serverDate(),
-            total_tests: 1,
-            ad_free_times: 0
+            total_used: 1,
+            total_shells: 0
           }
         })
       }
@@ -283,7 +283,7 @@ exports.main = async (event, context) => {
       console.error('更新用户次数失败', e)
     }
 
-    const remaining = (FREE_GENERATE_LIMIT + adFreeTimes) - (totalTests + 1)
+    const remaining = (FREE_GENERATE_LIMIT + adFreeTimes) - (totalUsed + 1)
     
     return {
       success: true,

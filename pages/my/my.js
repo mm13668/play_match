@@ -5,7 +5,7 @@ Page({
   data: {
     userInfo: null,
     hasUserInfo: false,
-    totalTests: 0,
+    totalUsed: 0,
     allRecords: []
   },
 
@@ -125,26 +125,30 @@ Page({
      }
      const usedTimes = 3 - localRemaining
      
+     console.log("usedTimes",usedTimes)
      db.collection('user').where({
        _openid: openid
      }).get().then(res => {
+      console.log("res 2",res)
        if (res.data.length === 0) {
+        console.log("res userInfo",userInfo)
          // 新用户，同步本地已经使用掉的次数到云端
-         db.collection('user').add({
-           data: {
-             _openid: openid,
-             nickname: userInfo.nickName,
-             avatar: userInfo.avatarUrl,
-             create_time: db.serverDate(),
-             total_tests: usedTimes,
-             ad_free_times: 0
-           }
-         })
+          db.collection('user').add({
+            data: {
+              nickname: userInfo.nickName,
+              avatar: userInfo.avatarUrl,
+              create_time: db.serverDate(),
+              total_used: usedTimes,
+              total_shells: localRemaining
+            }
+          })
+         console.log("openid 2",openid)
          // 授权后缓存已经和云端同步了，本地剩余 = 本地缓存 - usedTimes = 本地剩余
          let localFreeTimes = localRemaining - usedTimes
          if(localFreeTimes < 0 ){
           localFreeTimes = 0
          }
+         console.log("openid 3",openid)
          wx.setStorageSync('local_free_times', localFreeTimes)
        }
      })
@@ -155,15 +159,18 @@ Page({
     const openid = app.getOpenid()
     const db = wx.cloud.database()
 
+    console.log("loadUserData 1",openid)
     db.collection('user').where({
       _openid: openid
     }).get().then(res => {
       if (res.data.length > 0) {
         const user = res.data[0]
+        console.log("loadUserData user",user)
         this.setData({
-          totalTests: user.total_tests || 0
+          totalUsed: user.total_used || 0
         })
         
+        console.log("loadUserData user",user)
         // 如果有昵称和头像从数据库，更新到页面和全局
         if (user.nickname || user.avatar) {
           // 更新全局数据
@@ -265,7 +272,7 @@ Page({
            this.setData({
              userInfo: null,
              hasUserInfo: false,
-             totalTests: 0,
+             totalUsed: 0,
              allRecords: []
            })
            wx.showToast({

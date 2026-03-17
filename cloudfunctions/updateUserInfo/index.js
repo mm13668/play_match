@@ -61,8 +61,8 @@ exports.main = async (event, context) => {
           _openid: openid,
           ...updateData,
           create_time: db.serverDate(),
-          total_tests: 0,
-          ad_free_times: 0
+          total_used: 0,
+          total_shells: 0
         }
       })
     }
