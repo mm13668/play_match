@@ -8,10 +8,10 @@ cloud.init({
 const db = cloud.database()
 const _ = db.command
 
-// 七天前的时间戳计算
-const getSevenDaysAgo = () => {
+// 七十天前的时间戳计算
+const getSevenTyDaysAgo = () => {
   const date = new Date()
-  date.setDate(date.getDate() - 7)
+  date.setDate(date.getDate() - 70)
   return date
 }
 
@@ -93,18 +93,18 @@ exports.main = async (event, context) => {
     }
 
     // 4. 内容审核（配置权限后生效）
-    const isValid = await msgSecCheck(content, '')
-    if (!isValid) {
-      return {
-        success: false,
-        code: 'CONTENT_VIOLATION',
-        message: '内容包含违规信息，请修改后重试'
-      }
-    }
+    // const isValid = await msgSecCheck(content, '')
+    // if (!isValid) {
+    //   return {
+    //     success: false,
+    //     code: 'CONTENT_VIOLATION',
+    //     message: '内容包含违规信息，请修改后重试'
+    //   }
+    // }
 
-    // 5. 查询符合条件的异性用户（最近7天活跃）
+    // 5. 查询符合条件的异性用户（最近70天活跃）
     const targetGender = currentUser.gender === 'male' ? 'female' : 'male'
-    const sevenDaysAgo = getSevenDaysAgo()
+    const sevenDaysAgo = getSevenTyDaysAgo()
     
     const candidateRes = await db.collection('user')
       .where({

@@ -61,6 +61,8 @@ Page({
         })
         wx.setStorageSync('local_free_times', remaining)
         wx.setStorageSync('openid', openid)
+        app.globalData.openid = openid
+        app.globalData.userInfo = user
       } else {
         this.setData({
           remainingShells: 3,

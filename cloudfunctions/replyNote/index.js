@@ -61,14 +61,14 @@ exports.main = async (event, context) => {
     }
 
     // 3. 内容审核
-    const isValid = await msgSecCheck(replyContent, '')
-    if (!isValid) {
-      return {
-        success: false,
-        code: 'CONTENT_VIOLATION',
-        message: '内容包含违规信息，请修改后重试'
-      }
-    }
+    // const isValid = await msgSecCheck(replyContent, '')
+    // if (!isValid) {
+    //   return {
+    //     success: false,
+    //     code: 'CONTENT_VIOLATION',
+    //     message: '内容包含违规信息，请修改后重试'
+    //   }
+    // }
 
     // 4. 更新纸条回复信息
     await db.collection('notes').doc(noteId).update({

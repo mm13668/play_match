@@ -1,5 +1,16 @@
 <!--pages/index/index.wxml-->
 <view class="container">
+
+  <!-- 丢纸条入口 -->
+  <view class="note-card card mt-30" bindtap="onGoNote">
+    <view class="note-header">
+      <view class="note-title">丢纸条</view>
+      <view class="note-subtitle">匿名传递悄悄话 · 有缘人千里一线牵</view>
+    </view>
+    <view class="note-tag">
+      <text>消耗1贝壳</text>
+    </view>
+  </view>
   <!-- 品牌区 -->
   <view class="brand-card card text-center">
     <view class="brand-title">去玩匹配</view>
@@ -78,17 +89,6 @@
   <view class="mt-10">
     <button class="btn-primary" bindtap="onStartTest" disabled="{{remainingShells <= 0 }}">开始匹配测试</button>
   </view>
-
-   <!-- 丢纸条入口 -->
-   <view class="note-card card mt-30" bindtap="onGoNote">
-     <view class="note-header">
-       <view class="note-title">丢纸条</view>
-       <view class="note-subtitle">匿名传递悄悄话 · 有缘人千里一线牵</view>
-     </view>
-     <view class="note-tag">
-       <text>消耗1贝壳</text>
-     </view>
-   </view>
 
    <!-- 历史记录 -->
    <view wx:if="{{historyRecords.length > 0}}" class="history-card card mt-30">

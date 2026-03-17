@@ -42,8 +42,10 @@ Page({
 
   // 加载用户信息
   loadUserInfo() {
-    const userInfo = app.globalData.userInfo
-    if (userInfo && userInfo.nickname && userInfo.gender) {
+    const userInfo = app.globalData.userInfo 
+    // 检查是否有基本用户信息，昵称可能存在于不同字段
+    const hasnickname = userInfo && userInfo.nickname
+    if (userInfo && hasnickname) {
       this.setData({
         hasUserInfo: true,
         userInfo
@@ -61,7 +63,7 @@ Page({
     if (!app.globalData.userInfo) return
     
     const { total_shells = 0, total_used = 0 } = app.globalData.userInfo
-    const remaining = Math.max(0, 3 + total_shells - total_used)
+    const remaining = Math.max(0, total_shells - total_used)
     this.setData({
       remainingShells: remaining
     })
@@ -156,12 +158,26 @@ Page({
   refreshUserInfo() {
     const openid = app.globalData.openid
     const db = wx.cloud.database()
-    
+     
     db.collection('user').where({
       _openid: openid
     }).get().then(res => {
       if (res.data.length > 0) {
-        app.globalData.userInfo = res.data[0]
+        const user = res.data[0]
+        // 如果全局已经有用户信息，合并数据库数据
+        if (app.globalData.userInfo) {
+          Object.assign(app.globalData.userInfo, user)
+        } else {
+          app.globalData.userInfo = user
+        }
+        // 确保昵称统一
+        if (user.nickname && !app.globalData.userInfo.nickname) {
+          app.globalData.userInfo.nickname = user.nickname
+        }
+        this.setData({
+          userInfo: app.globalData.userInfo,
+          hasUserInfo: true
+        })
         this.calculateRemainingShells()
       }
     })

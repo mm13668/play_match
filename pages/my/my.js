@@ -135,8 +135,8 @@ Page({
          // 新用户，同步本地已经使用掉的次数到云端
           db.collection('user').add({
             data: {
-              nickname: userInfo.nickName,
-              avatar: userInfo.avatarUrl,
+              nickname: userInfo.nickname,
+              avatar: userInfo.avatar,
               create_time: db.serverDate(),
               total_used: usedTimes,
               total_shells: localRemaining
@@ -176,24 +176,24 @@ Page({
           // 更新全局数据
           if (app.globalData.userInfo) {
             if (user.nickname) {
-              app.globalData.userInfo.nickName = user.nickname
+              app.globalData.userInfo.nickname = user.nickname
               app.globalData.userInfo.nickname = user.nickname
             }
             if (user.avatar) {
               app.globalData.userInfo.avatar = user.avatar
-              app.globalData.userInfo.avatarUrl = user.avatar
+              app.globalData.userInfo.avatar = user.avatar
             }
           }
           
           // 直接更新页面数据，确保显示最新
           const updateData = {}
           if (user.nickname) {
-            updateData['userInfo.nickName'] = user.nickname
+            updateData['userInfo.nickname'] = user.nickname
             updateData['userInfo.nickname'] = user.nickname
           }
           if (user.avatar) {
             updateData['userInfo.avatar'] = user.avatar
-            updateData['userInfo.avatarUrl'] = user.avatar
+            updateData['userInfo.avatar'] = user.avatar
           }
           this.setData(updateData)
         }

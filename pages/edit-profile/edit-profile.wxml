@@ -17,7 +17,7 @@
         label="昵称"
         placeholder="请输入昵称"
         value="{{form.nickname}}"
-        bind:change="onNicknameChange"
+        bind:change="onnicknameChange"
         maxlength="20"
         required
         clearable

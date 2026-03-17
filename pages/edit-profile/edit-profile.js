@@ -93,7 +93,7 @@ Page({
   },
 
   // 昵称变化
-  onNicknameChange: function (e) {
+  onnicknameChange: function (e) {
     this.setData({
       'form.nickname': e.detail
     })
@@ -156,8 +156,8 @@ Page({
       if (res.result && res.result.success) {
         // 更新全局数据
         if (app.globalData.userInfo) {
-          app.globalData.userInfo.nickName = form.nickname
-          app.globalData.userInfo.avatarUrl = form.avatar
+          app.globalData.userInfo.nickname = form.nickname
+          app.globalData.userInfo.avatar = form.avatar
         }
         
         wx.showToast({ 
