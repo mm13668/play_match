@@ -126,5 +126,23 @@ Page({
   getSummary(content) {
     if (!content) return ''
     return content.length > 20 ? content.substring(0, 20) + '...' : content
+  },
+
+  // 跳转到丢纸条页面
+  goToSend() {
+    const userInfo = app.globalData.userInfo
+    const hasNickname = userInfo && (userInfo.nickName || userInfo.nickname)
+    
+    if (!hasNickname) {
+      wx.showToast({
+        title: '请先登录并完善个人资料',
+        icon: 'none'
+      })
+      return
+    }
+    
+    wx.navigateTo({
+      url: '/pages/note/send/send'
+    })
   }
 })
