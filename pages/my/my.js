@@ -15,6 +15,13 @@ Page({
 
   onShow: function () {
     if (this.data.hasUserInfo) {
+      // 重新从全局获取用户信息，更新页面展示
+      const userInfo = app.globalData.userInfo
+      if (userInfo) {
+        this.setData({
+          userInfo
+        })
+      }
       this.loadUserData()
       this.loadAllRecordsCount()
     }
@@ -156,6 +163,33 @@ Page({
         this.setData({
           totalTests: user.total_tests || 0
         })
+        
+        // 如果有昵称和头像从数据库，更新到页面和全局
+        if (user.nickname || user.avatar) {
+          // 更新全局数据
+          if (app.globalData.userInfo) {
+            if (user.nickname) {
+              app.globalData.userInfo.nickName = user.nickname
+              app.globalData.userInfo.nickname = user.nickname
+            }
+            if (user.avatar) {
+              app.globalData.userInfo.avatar = user.avatar
+              app.globalData.userInfo.avatarUrl = user.avatar
+            }
+          }
+          
+          // 直接更新页面数据，确保显示最新
+          const updateData = {}
+          if (user.nickname) {
+            updateData['userInfo.nickName'] = user.nickname
+            updateData['userInfo.nickname'] = user.nickname
+          }
+          if (user.avatar) {
+            updateData['userInfo.avatar'] = user.avatar
+            updateData['userInfo.avatarUrl'] = user.avatar
+          }
+          this.setData(updateData)
+        }
       }
     })
   },
