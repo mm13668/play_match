@@ -43,34 +43,72 @@ Page({
         this.setData({ loading: false })
         const result = res.result
 
-        if (result.success) {
-          const note = result.data
-          const openid = app.globalData.openid
-          const isReceiver = note.receiver_openid === openid
-          const canReply = isReceiver && note.is_viewed && !note.is_replied
-
-          this.setData({
-            note,
-            isReceiver,
-            canReply
-          })
-        } else {
-          if (result.code === 'NO_SHELLS') {
-            this.showNoShellsDialog(() => {
-              wx.navigateBack()
-            })
-          } else {
-            wx.showModal({
-              title: '提示',
-              content: result.message,
-              showCancel: false,
-              success: () => {
-                wx.navigateBack()
+          if (result.success) {
+            let note = JSON.parse(JSON.stringify(result.data))
+            const openid = app.globalData.openid
+            const isReceiver = note.receiver_openid === openid
+            const canReply = isReceiver && note.is_viewed && !note.is_replied
+            
+            // 预先格式化时间，直接显示
+            if (note.create_time) {
+              let timestamp
+              if (typeof note.create_time === 'object' && note.create_time.$date) {
+                timestamp = note.create_time.$date
+              } else if (typeof note.create_time === 'number') {
+                timestamp = note.create_time
+              } else if (typeof note.create_time === 'string') {
+                timestamp = Date.parse(note.create_time)
               }
+              
+              if (timestamp) {
+                const d = new Date(timestamp)
+                const month = d.getMonth() + 1
+                const day = d.getDate()
+                const hours = d.getHours()
+                const minutes = d.getMinutes()
+                const monthStr = month < 10 ? '0' + month : '' + month
+                const dayStr = day < 10 ? '0' + day : '' + day
+                const hoursStr = hours < 10 ? '0' + hours : '' + hours
+                const minutesStr = minutes < 10 ? '0' + minutes : '' + minutes
+                note.create_time_formatted = `${d.getFullYear()}-${monthStr}-${dayStr} ${hoursStr}:${minutesStr}`
+              } else {
+                note.create_time_formatted = ''
+              }
+            }
+            
+            if (note.reply_time) {
+              let timestamp
+              if (typeof note.reply_time === 'object' && note.reply_time.$date) {
+                timestamp = note.reply_time.$date
+              } else if (typeof note.reply_time === 'number') {
+                timestamp = note.reply_time
+              } else if (typeof note.reply_time === 'string') {
+                timestamp = Date.parse(note.reply_time)
+              }
+              
+              if (timestamp) {
+                const d = new Date(timestamp)
+                const month = d.getMonth() + 1
+                const day = d.getDate()
+                const hours = d.getHours()
+                const minutes = d.getMinutes()
+                const monthStr = month < 10 ? '0' + month : '' + month
+                const dayStr = day < 10 ? '0' + day : '' + day
+                const hoursStr = hours < 10 ? '0' + hours : '' + hours
+                const minutesStr = minutes < 10 ? '0' + minutes : '' + minutes
+                note.reply_time_formatted = `${d.getFullYear()}-${monthStr}-${dayStr} ${hoursStr}:${minutesStr}`
+              } else {
+                note.reply_time_formatted = ''
+              }
+            }
+
+            this.setData({
+              note,
+              isReceiver,
+              canReply
             })
           }
-        }
-      },
+       },
       fail: (err) => {
         this.setData({ loading: false })
         console.error('加载失败', err)
@@ -305,8 +343,38 @@ Page({
 
   // 格式化时间
   formatTime(date) {
-    const d = new Date(date)
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+    if (!date) return ''
+    
+    // 处理各种可能的日期格式
+    let timestamp
+    
+    if (typeof date === 'object' && date !== null && date.$date) {
+      // 云开发 serverDate 格式
+      timestamp = date.$date
+    } else if (typeof date === 'number') {
+      // 时间戳
+      timestamp = date
+    } else if (typeof date === 'string') {
+      // 尝试转换为时间戳
+      timestamp = Date.parse(date)
+    } else {
+      return ''
+    }
+    
+    const d = new Date(timestamp)
+    
+    // 检查日期是否有效
+    if (isNaN(d.getTime())) {
+      return ''
+    }
+    
+    // 兼容处理：手动补零，不使用 padStart 避免兼容性问题
+    const month = d.getMonth() + 1
+    const day = d.getDate()
+    const monthStr = month < 10 ? '0' + month : '' + month
+    const dayStr = day < 10 ? '0' + day : '' + day
+    
+    return `${d.getFullYear()}-${monthStr}-${dayStr}`
   },
 
   // 获取性别文本

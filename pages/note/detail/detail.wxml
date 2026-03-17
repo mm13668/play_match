@@ -11,7 +11,7 @@
 
       <view class="time-info">
         <text class="label">发送时间</text>
-        <text class="value">{{formatTime(note.create_time)}}</text>
+        <text class="value">{{note.create_time_formatted}}</text>
       </view>
 
       <view class="divider"></view>
@@ -26,8 +26,8 @@
         <view class="divider"></view>
         <text class="content-label">回复内容</text>
         <view class="content-text">{{note.reply_content}}</view>
-        <view class="reply-time">
-          回复时间: {{formatTime(note.reply_time)}}
+        <view class="reply-time" wx:if="{{note.reply_time_formatted}}">
+          回复时间: {{note.reply_time_formatted}}
         </view>
       </view>
     </view>
