@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "丢纸条",
+  "usingComponents": {
+    "van-button": "@vant/weapp/button/index"
+  }
+}

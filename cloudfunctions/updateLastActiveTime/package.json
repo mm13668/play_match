@@ -1,0 +1,9 @@
+{
+  "name": "updateLastActiveTime",
+  "version": "1.0.0",
+  "description": "更新用户最近活跃时间",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

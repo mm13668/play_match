@@ -1,0 +1,111 @@
+<view class="container">
+  <van-loading wx:if="{{loading}}" size="24px" vertical>加载中...</van-loading>
+
+  <view wx:if="{{!loading && note}}" class="content">
+    <!-- 纸条信息卡片 -->
+    <view class="card">
+      <view class="sender-info">
+        <text class="label">发送者</text>
+        <text class="value">{{note.sender_nick}} ({{getGenderText(note.sender_gender)}})</text>
+      </view>
+
+      <view class="time-info">
+        <text class="label">发送时间</text>
+        <text class="value">{{formatTime(note.create_time)}}</text>
+      </view>
+
+      <view class="divider"></view>
+
+      <view class="note-content">
+        <text class="content-label">纸条内容</text>
+        <view class="content-text">{{note.content}}</view>
+      </view>
+
+      <!-- 回复内容 -->
+      <view wx:if="{{note.is_replied}}" class="reply-content">
+        <view class="divider"></view>
+        <text class="content-label">回复内容</text>
+        <view class="content-text">{{note.reply_content}}</view>
+        <view class="reply-time">
+          回复时间: {{formatTime(note.reply_time)}}
+        </view>
+      </view>
+    </view>
+
+    <!-- 未查看状态（接收者） -->
+    <view wx:if="{{isReceiver && !note.is_viewed}}" class="action-card">
+      <text class="tip">查看纸条需要消耗1个贝壳</text>
+      <van-button 
+        type="primary" 
+        block 
+        loading="{{loading}}"
+        bindtap="loadDetail"
+      >
+        查看内容（消耗1贝壳）
+      </van-button>
+      <view wx:if="{{remainingShells <= 0}}" class="ad-tip">
+        <text>没有贝壳了，观看广告获得贝壳吧</text>
+        <van-button type="default" bindtap="watchAd" size="small">观看广告</van-button>
+      </view>
+    </view>
+
+    <!-- 已查看可以回复 -->
+    <view wx:if="{{isReceiver && note.is_viewed && canReply}}" class="action-card">
+      <van-button type="primary" block bindtap="onShowReply">回复纸条</van-button>
+    </view>
+
+    <!-- 生成匹配报告入口 -->
+    <view wx:if="{{note.is_viewed}}" class="action-card match-card">
+      <text class="tip">和对方生成情侣匹配报告，看看你们的默契度</text>
+      <van-button 
+        type="success" 
+        block 
+        loading="{{generatingMatch}}"
+        disabled="{{remainingShells <= 0}}"
+        bindtap="onGenerateMatch"
+      >
+        生成情侣匹配报告（消耗1贝壳）
+      </van-button>
+      <view wx:if="{{remainingShells <= 0}}" class="ad-tip">
+        <text>没有贝壳了，观看广告获得贝壳吧</text>
+        <van-button type="default" bindtap="watchAd" size="small">观看广告</van-button>
+      </view>
+    </view>
+
+    <!-- 回复弹窗 -->
+    <van-popup
+      show="{{showReplyInput}}"
+      position="bottom"
+      close-on-click-overlay
+      bind:close="onCancelReply"
+    >
+      <view class="reply-popup">
+        <view class="popup-header">
+          <text class="title">回复纸条</text>
+          <text class="cancel" bindtap="onCancelReply">取消</text>
+        </view>
+        <textarea
+          placeholder="输入回复内容（最多200字）"
+          value="{{replyContent}}"
+          bindinput="onReplyInput"
+          maxlength="{{maxLength}}"
+          auto-height
+          show-confirm-bar="{{false}}"
+          class="reply-textarea"
+        />
+        <view class="count">
+          <text>{{remainingCount}}/{{maxLength}}</text>
+        </view>
+        <van-button
+          type="primary"
+          block
+          loading="{{replying}}"
+          disabled="{{!replyContent.trim()}}"
+          bindtap="onSubmitReply"
+        >
+          发送回复
+        </van-button>
+      </view>
+    </van-popup>
+  </view>
+</view>

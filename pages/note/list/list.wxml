@@ -1,0 +1,43 @@
+<view class="container">
+  <van-tabs active="{{activeTab}}" bind:change="onTabChange">
+    <van-tab wx:for="{{tabs}}" wx:key="value" title="{{item.title}}" name="{{item.value}}" />
+  </van-tabs>
+
+  <view wx:if="{{loading}}" class="loading-container">
+    <van-loading size="24px">加载中...</van-loading>
+  </view>
+
+  <view wx:if="{{empty && !loading}}" class="empty-container">
+    <text class="empty-text">暂无纸条</text>
+  </view>
+
+  <view wx:if="{{!loading && !empty}}" class="list-container">
+    <view 
+      wx:for="{{notes}}" 
+      wx:key="_id" 
+      class="note-item" 
+      data-id="{{item._id}}"
+      bindtap="onNoteTap"
+    >
+      <view class="note-header">
+        <view class="sender">
+          <text wx:if="{{activeTab === 'received'}}">来自: {{item.sender_nick}}</text>
+          <text wx:if="{{activeTab === 'sent'}}">发给: 有缘人</text>
+        </view>
+        <view class="status {{activeTab === 'received' && !item.is_viewed ? 'unread' : ''}}">
+          {{activeTab === 'received' ? (item.is_viewed ? (item.is_replied ? '已回复' : '已读') : '未读') : (item.is_viewed ? (item.is_replied ? '已回复' : '已读') : '未读')}}
+        </view>
+      </view>
+      <view class="note-content">
+        <text>{{getSummary(item.content)}}</text>
+      </view>
+      <view class="note-footer">
+        <text class="time">{{formatTime(item.create_time)}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="bottom-action">
+    <van-button type="primary" block bindtap="goToSend">去丢纸条</van-button>
+  </view>
+</view>

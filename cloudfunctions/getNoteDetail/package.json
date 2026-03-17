@@ -1,0 +1,9 @@
+{
+  "name": "getNoteDetail",
+  "version": "1.0.0",
+  "description": "获取纸条详情",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

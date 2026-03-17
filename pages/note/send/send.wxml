@@ -1,0 +1,49 @@
+<view class="container">
+  <view class="card">
+    <view class="header">
+      <text class="title">丢纸条</text>
+      <text class="subtitle">匿名传递悄悄话给有缘人</text>
+    </view>
+
+    <view wx:if="{{!hasUserInfo}}" class="warning-card">
+      <text class="warning-text">请先到个人中心完善昵称和性别信息才能丢纸条</text>
+      <van-button type="primary" bindtap="goToProfile">去完善信息</van-button>
+    </view>
+
+    <view wx:if="{{hasUserInfo}}">
+      <view class="info-row">
+        <text class="label">剩余贝壳：</text>
+        <text class="value {{remainingShells <= 0 ? 'warning' : ''}}">{{remainingShells}}</text>
+      </view>
+
+      <view class="input-container">
+        <textarea
+          placeholder="写下你想说的话（最多200字）"
+          value="{{content}}"
+          bindinput="onInputChange"
+          maxlength="{{maxLength}}"
+          auto-height
+          show-confirm-bar="{{false}}"
+        />
+        <view class="count">
+          <text>{{remainingCount}}/{{maxLength}}</text>
+        </view>
+      </view>
+
+      <van-button
+        type="primary"
+        block
+        loading="{{loading}}"
+        bindtap="onSend"
+        disabled="{{!content.trim() || remainingShells <= 0}}"
+      >
+        {{remainingShells >= 1 ? '丢出去 (消耗1贝壳)' : '贝壳不足'}}
+      </van-button>
+
+      <view wx:if="{{remainingShells <= 0}}" class="ad-tip">
+        <text>没有贝壳了，观看广告可以获得贝壳哦</text>
+        <van-button type="default" bindtap="watchAd" size="small">观看广告</van-button>
+      </view>
+    </view>
+  </view>
+</view>

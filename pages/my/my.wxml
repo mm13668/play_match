@@ -20,16 +20,29 @@
       </view>
   </view>
 
-   <!-- 功能列表 -->
-   <view class="menu-card card mt-20">
-     <van-cell-group>
-        <van-cell title="我的测试记录" is-link bindclick="goToRecords">
-          <text slot="right-icon" class="count">{{allRecords.length}}</text>
-        </van-cell>
-       <van-cell title="设置" is-link bindclick="onSettings" />
-       <van-cell title="关于我们" is-link bindclick="onAbout" />
-       <van-cell title="退出登录" is-link bindclick="onLogout" wx:if="{{hasUserInfo}}" />
-     </van-cell-group>
-   </view>
+    <!-- 功能入口 -->
+    <view class="quick-actions card mt-20">
+      <view class="action-item" bindtap="goToSendNote">
+        <text class="action-title">丢纸条</text>
+        <text class="action-arrow">></text>
+      </view>
+      <view class="action-item" bindtap="goToMyNotes">
+        <text class="action-title">我的纸条</text>
+        <text class="action-arrow">></text>
+      </view>
+    </view>
+
+    <!-- 功能列表 -->
+    <view class="menu-card card mt-20">
+      <van-cell-group>
+         <van-cell title="我的测试记录" is-link bindclick="goToRecords">
+           <text slot="right-icon" class="count">{{allRecords.length}}</text>
+         </van-cell>
+        <van-cell title="编辑资料" is-link bindclick="goToEditProfile" />
+        <van-cell title="设置" is-link bindclick="onSettings" />
+        <van-cell title="关于我们" is-link bindclick="onAbout" />
+        <van-cell title="退出登录" is-link bindclick="onLogout" wx:if="{{hasUserInfo}}" />
+      </van-cell-group>
+    </view>
 
 </view>

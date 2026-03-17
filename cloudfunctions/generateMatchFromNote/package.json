@@ -1,0 +1,10 @@
+{
+  "name": "generateMatchFromNote",
+  "version": "1.0.0",
+  "description": "从纸条生成情侣匹配报告",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3",
+    "axios": "^0.21.1"
+  }
+}

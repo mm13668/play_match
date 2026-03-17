@@ -4,7 +4,10 @@
     "pages/result/result",
     "pages/my/my",
     "pages/records/records",
-    "pages/edit-profile/edit-profile"
+    "pages/edit-profile/edit-profile",
+    "pages/note/send/send",
+    "pages/note/list/list",
+    "pages/note/detail/detail"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -43,7 +46,11 @@
     "van-toast": "@vant/weapp/toast/index",
     "van-notify": "@vant/weapp/notify/index",
     "van-uploader": "@vant/weapp/uploader/index",
-    "van-icon": "@vant/weapp/icon/index"
+    "van-icon": "@vant/weapp/icon/index",
+    "van-tabs": "@vant/weapp/tabs/index",
+    "van-tab": "@vant/weapp/tab/index",
+    "van-loading": "@vant/weapp/loading/index",
+    "van-popup": "@vant/weapp/popup/index"
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json",

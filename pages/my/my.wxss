@@ -68,6 +68,36 @@
   margin-right: 10rpx;
 }
 
+/* 快速入口 */
+.quick-actions {
+  display: flex;
+  padding: 0;
+}
+
+.action-item {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-right: 1rpx solid #f0f0f0;
+}
+
+.action-item:last-child {
+  border-right: none;
+}
+
+.action-title {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.action-arrow {
+  font-size: 28rpx;
+  color: #ccc;
+}
+
 /* 退出登录文字红色 */
 .van-cell[title="退出登录"] .van-cell__title {
   color: #ff4d4f;

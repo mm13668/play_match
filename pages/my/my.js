@@ -225,19 +225,47 @@ Page({
      })
    },
 
-   // 跳转到编辑资料页面
-   goToEditProfile: function () {
-     if (!this.data.hasUserInfo) {
-       wx.showToast({
-         title: '请先登录',
-         icon: 'none'
-       })
-       return
-     }
-     wx.navigateTo({
-       url: '/pages/edit-profile/edit-profile'
-     })
-   },
+    // 跳转到编辑资料页面
+    goToEditProfile: function () {
+      if (!this.data.hasUserInfo) {
+        wx.showToast({
+          title: '请先登录',
+          icon: 'none'
+        })
+        return
+      }
+      wx.navigateTo({
+        url: '/pages/edit-profile/edit-profile'
+      })
+    },
+
+    // 跳转到我的纸条
+    goToMyNotes: function () {
+      if (!this.data.hasUserInfo) {
+        wx.showToast({
+          title: '请先登录',
+          icon: 'none'
+        })
+        return
+      }
+      wx.navigateTo({
+        url: '/pages/note/list/list'
+      })
+    },
+
+    // 跳转到丢纸条
+    goToSendNote: function () {
+      if (!this.data.hasUserInfo) {
+        wx.showToast({
+          title: '请先登录',
+          icon: 'none'
+        })
+        return
+      }
+      wx.navigateTo({
+        url: '/pages/note/send/send'
+      })
+    },
 
   // 设置
   onSettings: function () {

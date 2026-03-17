@@ -26,6 +26,7 @@ Page({
   onShow: function () {
     this.loadUserInfo()
     this.loadHistoryRecords()
+    this.updateLastActiveTime()
   },
 
   // 加载用户信息获取已测试次数
@@ -221,10 +222,17 @@ Page({
     })
   },
 
-  // 跳转到我的测试记录页面看所有记录
+    // 跳转到我的测试记录页面看所有记录
   onGoMy: function() {
     wx.navigateTo({
       url: '/pages/records/records'
+    })
+  },
+
+  // 跳转到丢纸条页面
+  onGoNote: function() {
+    wx.navigateTo({
+      url: '/pages/note/send/send'
     })
   },
 
@@ -304,26 +312,45 @@ Page({
    },
 
    // 处理分享邀请：好友通过分享进入，给分享者增加一次免费机会
-   handleShareInvite: function(shareOpenid) {
-     // 调用云函数给分享者增加一次免费机会
-     wx.cloud.callFunction({
-       name: 'addTotalShells',
-       data: {
-         targetOpenid: shareOpenid,
-         isShareReward: true
-       },
-       success: res => {
-         console.log('分享奖励发放成功', res.result)
-         wx.showToast({
-           title: '感谢支持分享者，已发放奖励',
-           icon: 'success',
-           duration: 2000
-         })
-       },
-       fail: err => {
-         console.error('分享奖励发放失败', err)
-       }
-     })
-   }
- })
+    handleShareInvite: function(shareOpenid) {
+      // 调用云函数给分享者增加一次免费机会
+      wx.cloud.callFunction({
+        name: 'addTotalShells',
+        data: {
+          targetOpenid: shareOpenid,
+          isShareReward: true
+        },
+        success: res => {
+          console.log('分享奖励发放成功', res.result)
+          wx.showToast({
+            title: '感谢支持分享者，已发放奖励',
+            icon: 'success',
+            duration: 2000
+          })
+        },
+        fail: err => {
+          console.error('分享奖励发放失败', err)
+        }
+      })
+    },
+
+    // 更新用户最近活跃时间
+    updateLastActiveTime: function() {
+      const openid = app.getOpenid() || wx.getStorageSync('openid')
+      if (!openid) {
+        return
+      }
+
+      wx.cloud.callFunction({
+        name: 'updateLastActiveTime',
+        data: {},
+        success: res => {
+          console.log('更新活跃时间成功', res.result)
+        },
+        fail: err => {
+          console.error('更新活跃时间失败', err)
+        }
+      })
+    }
+  })
 

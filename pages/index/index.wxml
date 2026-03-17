@@ -79,23 +79,34 @@
     <button class="btn-primary" bindtap="onStartTest" disabled="{{remainingShells <= 0 }}">开始匹配测试</button>
   </view>
 
-  <!-- 历史记录 -->
-  <view wx:if="{{historyRecords.length > 0}}" class="history-card card mt-30">
-    <view class="history-title">最近测试记录</view>
-    <view class="history-list">
-       <view 
-         wx:for="{{historyRecords}}" 
-         wx:key="_id"
-         class="history-item"
-         bindtap="onHistoryTap"
-         data-id="{{item._id}}"
-       >
-        <view class="history-names">{{item.person1_name}} & {{item.person2_name}}</view>
-        <view class="history-score">{{item.match_score}}分</view>
-      </view>
-    </view>
-    <view class="text-center mt-20">
-      <button class="btn-more" bindtap="onGoMy">查看全部</button>
-    </view>
-  </view>
-</view>
+   <!-- 丢纸条入口 -->
+   <view class="note-card card mt-30" bindtap="onGoNote">
+     <view class="note-header">
+       <view class="note-title">丢纸条</view>
+       <view class="note-subtitle">匿名传递悄悄话 · 有缘人千里一线牵</view>
+     </view>
+     <view class="note-tag">
+       <text>消耗1贝壳</text>
+     </view>
+   </view>
+
+   <!-- 历史记录 -->
+   <view wx:if="{{historyRecords.length > 0}}" class="history-card card mt-30">
+     <view class="history-title">最近测试记录</view>
+     <view class="history-list">
+        <view 
+          wx:for="{{historyRecords}}" 
+          wx:key="_id"
+          class="history-item"
+          bindtap="onHistoryTap"
+          data-id="{{item._id}}"
+        >
+         <view class="history-names">{{item.person1_name}} & {{item.person2_name}}</view>
+         <view class="history-score">{{item.match_score}}分</view>
+       </view>
+     </view>
+     <view class="text-center mt-20">
+       <button class="btn-more" bindtap="onGoMy">查看全部</button>
+     </view>
+   </view>
+ </view>
