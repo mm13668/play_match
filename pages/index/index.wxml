@@ -65,18 +65,18 @@
 
   <!-- 剩余次数提示 -->
   <view class="remaining-hint text-center mt-20">
-    <text class="remaining-text" wx:if="{{remainingTimes > 0}}">剩余 <text class="remaining-count text-primary">{{remainingTimes}}</text> 次</text>
-    <text class="remaining-text" wx:if="{{remainingTimes <= 0 }}">次数已用完</text>
+    <text class="remaining-text" wx:if="{{remainingShells > 0}}">剩余 <text class="remaining-count text-primary">{{remainingShells}}</text> 次</text>
+    <text class="remaining-text" wx:if="{{remainingShells <= 0 }}">次数已用完</text>
   </view>
   
   <!-- 看广告增加次数 -->
-  <view wx:if="{{remainingTimes <= 0 }}" class="text-center mt-10">
+  <view wx:if="{{remainingShells <= 0 }}" class="text-center mt-10">
     <button class="btn-ad" bindtap="onWatchAd">看广告获取次数</button>
   </view>
 
   <!-- 开始测试按钮 -->
   <view class="mt-10">
-    <button class="btn-primary" bindtap="onStartTest" disabled="{{remainingTimes <= 0 }}">开始匹配测试</button>
+    <button class="btn-primary" bindtap="onStartTest" disabled="{{remainingShells <= 0 }}">开始匹配测试</button>
   </view>
 
   <!-- 历史记录 -->

@@ -7,7 +7,7 @@ Page({
     person2Name: '',
     relationType: '1',
     historyRecords: [],
-    remainingTimes: 3,
+    remainingShells: 3,
     hasUserInfo: false
   },
 
@@ -41,7 +41,7 @@ Page({
       // 保证cached是数字
       cached = Number(cached)
       this.setData({
-        remainingTimes: cached,
+        remainingShells: cached,
         hasUserInfo: false
       })
       return
@@ -53,19 +53,16 @@ Page({
     }).get().then(res => {
       if (res.data.length > 0) {
         const user = res.data[0]
-        const total = user.total_used || 0
-        const adFreeTimes = user.total_shells || 0
-        const totalAllowed = 3 + adFreeTimes
-        const remaining = Math.max(0, totalAllowed - total)
+        const remaining = Math.max(0, user.total_shells - user.total_used)
         this.setData({
-          remainingTimes: remaining,
+          remainingShells: remaining,
           hasUserInfo: true
         })
         wx.setStorageSync('local_free_times', remaining)
         wx.setStorageSync('openid', openid)
       } else {
         this.setData({
-          remainingTimes: 3,
+          remainingShells: 3,
           hasUserInfo: true
         })
         wx.setStorageSync('local_free_times', 3)
@@ -73,7 +70,7 @@ Page({
   }).catch(err => {
         console.error('加载用户信息失败', err)
         this.setData({
-          remainingTimes: 3
+          remainingShells: 3
         })
       })
   },
@@ -106,7 +103,7 @@ Page({
 
   // 开始测试
   onStartTest: function() {
-    const { person1Name, person2Name, remainingTimes } = this.data
+    const { person1Name, person2Name, remainingShells } = this.data
 
     if (!person1Name || !person2Name) {
       wx.showToast({
@@ -117,7 +114,7 @@ Page({
     }
 
     // 本地检查次数，如果没次数直接提示
-    if (remainingTimes <= 0) {
+    if (remainingShells <= 0) {
       wx.showModal({
         title: '免费次数已用完',
         content: '观看广告可以获得更多免费生成机会，快去点击看广告获取吧',
@@ -151,9 +148,9 @@ Page({
         wx.hideLoading()
         if (res.result.success) {
           // 成功生成后，本地扣减一次
-          const newRemaining = Math.max(0, this.data.remainingTimes - 1)
+          const newRemaining = Math.max(0, this.data.remainingShells - 1)
           this.setData({
-            remainingTimes: newRemaining
+            remainingShells: newRemaining
           })
           wx.setStorageSync('local_free_times', newRemaining)
           wx.navigateTo({

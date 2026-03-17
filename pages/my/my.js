@@ -5,7 +5,7 @@ Page({
   data: {
     userInfo: null,
     hasUserInfo: false,
-    totalUsed: 0,
+    totalShells: 0,
     allRecords: []
   },
 
@@ -167,7 +167,7 @@ Page({
         const user = res.data[0]
         console.log("loadUserData user",user)
         this.setData({
-          totalUsed: user.total_used || 0
+          totalShells: user.total_shells - user.total_used || 0
         })
         
         console.log("loadUserData user",user)
@@ -272,7 +272,7 @@ Page({
            this.setData({
              userInfo: null,
              hasUserInfo: false,
-             totalUsed: 0,
+             totalShells: 0,
              allRecords: []
            })
            wx.showToast({

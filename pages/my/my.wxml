@@ -12,7 +12,7 @@
         <view wx:else class="avatar default-avatar"></view>
         <view class="user-info-text">
            <view class="nickname">{{userInfo.nickname || userInfo.nickName || '微信用户'}}</view>
-          <view class="stats">共测试 {{totalUsed}} 次</view>
+          <view class="stats">共 {{totalShells}} 个 🐚</view>
         </view>
          <view class="arrow-icon">
            <view class="arrow"></view>
