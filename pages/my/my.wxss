@@ -39,6 +39,20 @@
   color: #999;
 }
 
+.arrow-icon {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.arrow {
+  width: 12rpx;
+  height: 12rpx;
+  border-top: 2rpx solid #C8C9CC;
+  border-right: 2rpx solid #C8C9CC;
+  transform: rotate(45deg);
+}
+
 .vip-tag {
   display: inline-block;
   font-size: 22rpx;

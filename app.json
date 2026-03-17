@@ -42,7 +42,8 @@
     "van-dialog": "@vant/weapp/dialog/index",
     "van-toast": "@vant/weapp/toast/index",
     "van-notify": "@vant/weapp/notify/index",
-    "van-uploader": "@vant/weapp/uploader/index"
+    "van-uploader": "@vant/weapp/uploader/index",
+    "van-icon": "@vant/weapp/icon/index"
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json",

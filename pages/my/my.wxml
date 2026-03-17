@@ -5,16 +5,19 @@
     <view wx:if="{{!hasUserInfo}}" class="login-box">
       <button open-type="getUserInfo" bindgetuserinfo="onGetUserInfo" class="btn-primary">授权登录</button>
     </view>
-     <view wx:if="{{hasUserInfo}}" class="user-info" bindtap="goToEditProfile">
-        <view wx:if="{{userInfo && (userInfo.avatar || userInfo.avatarUrl)}}" class="avatar-wrapper">
-          <image class="avatar" src="{{userInfo.avatar || userInfo.avatarUrl}}"></image>
-       </view>
-       <view wx:else class="avatar default-avatar"></view>
-       <view class="user-info-text">
-          <view class="nickname">{{userInfo.nickname || userInfo.nickName || '微信用户'}}</view>
-         <view class="stats">共测试 {{totalTests}} 次</view>
-       </view>
-     </view>
+      <view wx:if="{{hasUserInfo}}" class="user-info" bindtap="goToEditProfile">
+          <view wx:if="{{userInfo && (userInfo.avatar || userInfo.avatarUrl)}}" class="avatar-wrapper">
+            <image class="avatar" src="{{userInfo.avatar || userInfo.avatarUrl}}"></image>
+         </view>
+        <view wx:else class="avatar default-avatar"></view>
+        <view class="user-info-text">
+           <view class="nickname">{{userInfo.nickname || userInfo.nickName || '微信用户'}}</view>
+          <view class="stats">共测试 {{totalTests}} 次</view>
+        </view>
+         <view class="arrow-icon">
+           <view class="arrow"></view>
+         </view>
+      </view>
   </view>
 
    <!-- 功能列表 -->
