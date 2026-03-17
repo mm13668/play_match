@@ -1,6 +1,5 @@
 // pages/edit-profile/edit-profile.js
 const app = getApp()
-const Toast = require('@vant/weapp/toast/toast')
 
 Page({
   data: {
@@ -22,7 +21,7 @@ Page({
   loadUserInfo: function () {
     const openid = app.getOpenid()
     if (!openid) {
-      Toast.fail('请先登录')
+      wx.showToast({ title: '请先登录', icon: 'none' })
       setTimeout(() => {
         wx.navigateBack()
       }, 1500)
@@ -46,7 +45,7 @@ Page({
       }
     }).catch(err => {
       console.error('加载用户信息失败', err)
-      Toast.fail('加载用户信息失败')
+      wx.showToast({ title: '加载用户信息失败', icon: 'none' })
     })
   },
 
@@ -65,10 +64,7 @@ Page({
 
   // 上传头像到云存储
   uploadAvatar: function (filePath) {
-    Toast.loading({
-      message: '上传中...',
-      forbidClick: true
-    })
+    wx.showLoading({ title: '上传中...', mask: true })
 
     const openid = app.getOpenid()
     const cloudPath = `avatars/${openid}_${Date.now()}.jpg`
@@ -77,28 +73,21 @@ Page({
       cloudPath: cloudPath,
       filePath: filePath,
       success: (res) => {
-        // 获取临时链接
-        wx.cloud.getTempFileURL({
-          fileList: [res.fileID],
-          success: (urlRes) => {
-            const avatarUrl = urlRes.fileList[0].tempFileURL
-            this.setData({
-              'form.avatar': avatarUrl
-            })
-            Toast.success('上传成功')
-          },
-          fail: () => {
-            // 使用 fileID 作为 avatar
-            this.setData({
-              'form.avatar': res.fileID
-            })
-            Toast.success('上传成功')
-          }
+        // 直接使用 fileID 作为头像地址
+        // 小程序 image 组件支持 cloud:// 协议的 fileID
+        const fileID = res.fileID
+        
+        this.setData({
+          'form.avatar': fileID
         })
+        
+        wx.hideLoading()
+        wx.showToast({ title: '上传成功', icon: 'success' })
       },
       fail: (err) => {
         console.error('上传头像失败', err)
-        Toast.fail('上传失败')
+        wx.hideLoading()
+        wx.showToast({ title: '上传失败', icon: 'none' })
       }
     })
   },
@@ -129,12 +118,12 @@ Page({
     const { nickname, gender } = this.data.form
     
     if (!nickname || nickname.trim() === '') {
-      Toast.fail('请输入昵称')
+      wx.showToast({ title: '请输入昵称', icon: 'none' })
       return false
     }
     
     if (!gender) {
-      Toast.fail('请选择性别')
+      wx.showToast({ title: '请选择性别', icon: 'none' })
       return false
     }
     
@@ -171,19 +160,26 @@ Page({
           app.globalData.userInfo.avatarUrl = form.avatar
         }
         
-        Toast.success('保存成功')
+        wx.showToast({ 
+          title: '保存成功', 
+          icon: 'success',
+          duration: 1500
+        })
         
         // 延迟返回
         setTimeout(() => {
           wx.navigateBack()
         }, 1500)
       } else {
-        Toast.fail(res.result.message || '保存失败')
+        wx.showToast({ 
+          title: res.result.message || '保存失败', 
+          icon: 'none' 
+        })
       }
     }).catch(err => {
       this.setData({ isSaving: false })
       console.error('保存失败', err)
-      Toast.fail('保存失败')
+      wx.showToast({ title: '保存失败', icon: 'none' })
     })
   }
 })
