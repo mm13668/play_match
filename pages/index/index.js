@@ -191,7 +191,7 @@ Page({
 
   // 加载历史记录
   loadHistoryRecords: function() {
-    const openid = app.getOpenid()
+    const openid = app.getOpenid() || wx.getStorageSync('openid')
     if (!openid) {
       return
     }
