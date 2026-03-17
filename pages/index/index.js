@@ -228,10 +228,10 @@ Page({
     })
   },
 
-  // 看广告增加免费次数
+  // 看广告增加贝壳数量
   onWatchAd: function() {
     // 这里后续接入流量主激励视频广告
-    // 目前先占位，广告看完调用云函数增加次数
+    // 目前先占位，广告看完调用云函数增加贝壳数量
     wx.showModal({
       title: '看广告得次数',
       content: '观看激励视频广告后可获得1次免费生成机会，确定继续吗？',
@@ -244,7 +244,7 @@ Page({
             title: '处理中...'
           })
           wx.cloud.callFunction({
-            name: 'addFreeTimes',
+            name: 'addTotalShells',
             success: res => {
               wx.hideLoading()
               if (res.result.success) {
@@ -307,7 +307,7 @@ Page({
    handleShareInvite: function(shareOpenid) {
      // 调用云函数给分享者增加一次免费机会
      wx.cloud.callFunction({
-       name: 'addFreeTimes',
+       name: 'addTotalShells',
        data: {
          targetOpenid: shareOpenid,
          isShareReward: true

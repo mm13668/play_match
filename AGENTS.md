@@ -1,54 +1,55 @@
-# Agent Guide for play_match WeChat Mini Program
+# 去玩匹配 微信小程序开发指南
 
-## Project Overview
-A WeChat Mini Program for AI-powered relationship compatibility testing using WeChat Cloud Development and ByteDance Doubao AI API.
+## 项目概述
 
-**Tech Stack:** WeChat Mini Program Native + WeChat Cloud Development + Vant Weapp UI
+「去玩匹配」是一个AI驱动的双人关系匹配测试微信小游戏，基于微信云开发和字节跳动豆包AI大模型API开发。
 
-## Build Commands
+**技术栈：** 微信小程序原生开发 + 微信云开发 + Vant Weapp UI组件库
 
-This is a WeChat Mini Program project managed through WeChat Developer Tools. There are no npm build scripts defined.
+## 构建命令
+
+本项目是通过微信开发者工具管理的微信小程序项目，没有定义npm构建脚本。
 
 ```bash
-# Install dependencies (Vant Weapp components)
+# 安装依赖（Vant Weapp组件库）
 npm install
 
-# After npm install, use WeChat Developer Tools to:
-# 1. Build npm (Tools → Build npm)
-# 2. Compile the project
+# npm安装完成后，在微信开发者工具中执行：
+# 1. 工具 → 构建 npm
+# 2. 编译项目
 ```
 
-## Code Style Guidelines
+## 代码风格指南
 
-### File Structure
+### 文件结构
 ```
-pages/           # Page files (.js, .wxml, .wxss, .json)
-components/      # Custom components (when needed)
-cloudfunctions/  # Cloud functions
-utils/           # Utility functions
-images/          # Static images
+pages/           # 页面文件 (.js, .wxml, .wxss, .json)
+components/      # 自定义组件（目前为空）
+cloudfunctions/  # 云函数
+utils/           # 工具函数
+images/          # 静态图片
 ```
 
-### Naming Conventions
-- **Files:** lowercase with hyphens (e.g., `index.js`, `my-page.wxml`)
-- **Pages:** Descriptive names (index, result, my, records)
-- **Variables:** camelCase
-- **Constants:** UPPER_SNAKE_CASE
-- **Cloud Functions:** camelCase (e.g., `generateReport`, `createOrder`)
+### 命名规范
+- **文件：** 小写连字符分隔 (例如 `index.js`, `my-page.wxml`)
+- **页面：** 描述性名称 (index, result, my, records)
+- **变量：** 驼峰命名 (camelCase)
+- **常量：** 大写下划线分隔 (UPPER_SNAKE_CASE)
+- **云函数：** 驼峰命名 (例如 `generateReport`, `createOrder`)
 
-### JavaScript Style
-- Use ES6+ features (arrow functions, const/let, async/await)
-- Always use strict equality (`===`, `!==`)
-- Avoid `var`, prefer `const` (default) or `let`
-- Handle promises with `try/catch` in async functions
-- Include JSDoc comments for complex functions
+### JavaScript 风格
+- 使用 ES6+ 特性（箭头函数、const/let、async/await）
+- 始终使用严格相等 (`===`, `!==`)
+- 避免使用 `var`，优先使用 `const`（默认）或 `let`
+- 在异步函数中使用 `try/catch` 处理错误
+- 复杂函数需要添加 JSDoc 注释
 
-Example:
+示例：
 ```javascript
 /**
- * Format date to Chinese string
- * @param {Date} date - Date object
- * @returns {string} Formatted date string
+ * 格式化日期为中文字符串
+ * @param {Date} date - 日期对象
+ * @returns {string} 格式化后的日期字符串
  */
 const formatDate = (date) => {
   const year = date.getFullYear();
@@ -58,27 +59,27 @@ const formatDate = (date) => {
 };
 ```
 
-### WeChat Mini Program Specifics
-- Use `wx.` APIs with proper error handling
-- Always handle cloud function call errors
-- Use Vant Weapp components when available (defined in `app.json` `usingComponents`)
-- Store reusable data in `app.js` `globalData`
-- Use `wxss` for styling following the project's color scheme (primary: `#FF6B6B`)
+### 微信小程序开发规范
+- 使用 `wx.` API 时需要正确处理错误
+- 始终处理云函数调用错误
+- 优先使用 Vant Weapp 组件（已在 `app.json` `usingComponents` 中定义）
+- 可复用数据存放在 `app.js` `globalData` 中
+- 使用 `wxss` 编写样式，遵循项目配色方案（主色：`#FF6B6B`）
 
-### Cloud Functions
-- Always include `wx-server-sdk` dependency
-- Use async/await pattern
-- Handle errors and return structured responses
-- Store sensitive configs in separate `config.js` files
+### 云函数开发规范
+- 始终引入 `wx-server-sdk` 依赖
+- 使用 async/await 模式
+- 错误处理，返回结构化响应
+- 敏感配置存放在独立的 `config.js` 文件中
 
-Example:
+示例：
 ```javascript
 const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 
 exports.main = async (event, context) => {
   try {
-    // Function logic
+    // 函数逻辑
     return { success: true, data: result };
   } catch (error) {
     return { success: false, error: error.message };
@@ -86,35 +87,39 @@ exports.main = async (event, context) => {
 };
 ```
 
-## Key Project Information
+## 关键项目信息
 
-### Dependencies
-- `@vant/weapp`: ^1.11.7 (UI component library)
+### 依赖
+- `@vant/weapp`: ^1.11.7（UI组件库）
 
-### Cloud Functions
-1. `generateReport`: AI report generation using ByteDance Doubao API
-2. `createOrder`: WeChat Pay order creation
-3. `generateShareCode`: Share code generation
+### 云函数列表
+1. `generateReport`: 使用字节跳动豆包API生成AI报告（核心功能）
+2. `createOrder`: 创建微信支付订单
+3. `generateShareCode`: 生成分享邀请码
+4. `addTotalShells`: 增加贝壳数量（广告/分享奖励）
+5. `getOpenId`: 获取用户OpenID用于身份验证
+6. `updateUserInfo`: 更新用户信息到数据库
 
-### Database Collections
-- `user`: User information
-- `test_record`: Test history records
-- `order`: Payment orders
+### 数据库集合
+- `user`: 用户信息
+- `test_record`: 测试历史记录
+- `order`: 支付订单
+- `share_codes`: 分享邀请码关系映射
 
-### Important Notes
-- Replace cloud environment ID in `app.js` line 7
-- Configure Doubao API key in `cloudfunctions/generateReport/config.js`
-- Add `https://aquasearch.bytedance.com` to request whitelist
+### 重要提示
+- 在 `app.js` 第7行替换云开发环境ID
+- 在 `cloudfunctions/generateReport/config.js` 配置豆包API密钥
+- 在微信公众平台添加 `https://ark.cn-beijing.volces.com` 到请求合法域名白名单
 
-## Testing
+## 测试
 
-This project currently has no automated test framework configured. Manual testing should be done through WeChat Developer Tools.
+本项目目前没有配置自动化测试框架，需要通过微信开发者工具进行手动测试。
 
-When adding tests:
-- Consider using Jest or similar JavaScript testing framework
-- Add test files alongside source files with `.test.js` or `.spec.js` suffix
-- Test cloud functions separately from UI components
+如果添加测试：
+- 考虑使用 Jest 或类似 JavaScript 测试框架
+- 测试文件和源文件放在一起，后缀使用 `.test.js` 或 `.spec.js`
+- 云函数和UI组件分开测试
 
 ---
 
-*This guide is based on the current project structure and conventions. Update as the project evolves.*
+*本指南基于当前项目结构和约定编写，随着项目演进请及时更新。*
