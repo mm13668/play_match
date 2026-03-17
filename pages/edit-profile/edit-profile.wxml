@@ -1,0 +1,66 @@
+<view class="container">
+  <!-- 头像区域 -->
+  <view class="avatar-section">
+    <view class="avatar-wrapper" bindtap="chooseAvatar">
+      <image class="avatar" src="{{form.avatar || defaultAvatar}}" mode="aspectFill"></image>
+      <view class="avatar-mask">
+        <text class="mask-text">更换头像</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 表单区域 -->
+  <view class="form-section">
+    <!-- 昵称 -->
+    <van-cell-group>
+      <van-field
+        label="昵称"
+        placeholder="请输入昵称"
+        value="{{form.nickname}}"
+        bind:change="onNicknameChange"
+        maxlength="20"
+        required
+        clearable
+      />
+    </van-cell-group>
+
+    <!-- 性别 -->
+    <view class="gender-section">
+      <view class="gender-label">性别</view>
+      <van-radio-group value="{{form.gender}}" bind:change="onGenderChange" direction="horizontal">
+        <van-radio name="male" checked-color="#FF6B6B">男</van-radio>
+        <van-radio name="female" checked-color="#FF6B6B">女</van-radio>
+      </van-radio-group>
+    </view>
+
+    <!-- 个性签名 -->
+    <van-cell-group>
+      <van-field
+        label="个性签名"
+        placeholder="介绍一下自己吧（最多30字）"
+        value="{{form.signature}}"
+        bind:change="onSignatureChange"
+        maxlength="30"
+        type="textarea"
+        autosize="{{ { maxHeight: 80 } }}"
+        show-word-limit
+      />
+    </van-cell-group>
+  </view>
+
+  <!-- 保存按钮 -->
+  <view class="button-section">
+    <van-button 
+      type="primary" 
+      block 
+      round 
+      color="#FF6B6B"
+      loading="{{isSaving}}"
+      bind:click="onSave"
+    >
+      保存
+    </van-button>
+  </view>
+</view>
+
+<van-toast id="van-toast" />

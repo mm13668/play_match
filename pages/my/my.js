@@ -177,12 +177,26 @@ Page({
       })
   },
 
-  // 跳转到我的测试记录页面
-  goToRecords: function () {
-    wx.navigateTo({
-      url: '/pages/records/records'
-    })
-  },
+   // 跳转到我的测试记录页面
+   goToRecords: function () {
+     wx.navigateTo({
+       url: '/pages/records/records'
+     })
+   },
+
+   // 跳转到编辑资料页面
+   goToEditProfile: function () {
+     if (!this.data.hasUserInfo) {
+       wx.showToast({
+         title: '请先登录',
+         icon: 'none'
+       })
+       return
+     }
+     wx.navigateTo({
+       url: '/pages/edit-profile/edit-profile'
+     })
+   },
 
   // 设置
   onSettings: function () {

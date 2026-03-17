@@ -5,9 +5,12 @@
     <view wx:if="{{!hasUserInfo}}" class="login-box">
       <button open-type="getUserInfo" bindgetuserinfo="onGetUserInfo" class="btn-primary">授权登录</button>
     </view>
-     <view wx:if="{{hasUserInfo}}" class="user-info">
+     <view wx:if="{{hasUserInfo}}" class="user-info" bindtap="goToEditProfile">
        <view wx:if="{{userInfo && userInfo.avatar}}" class="avatar-wrapper">
          <image class="avatar" src="{{userInfo.avatar}}"></image>
+         <view class="edit-icon">
+           <text class="edit-text">编辑</text>
+         </view>
        </view>
        <view wx:else class="avatar default-avatar"></view>
        <view class="user-info-text">
