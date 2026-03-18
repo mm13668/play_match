@@ -28,12 +28,6 @@
           {{activeTab === 'received' ? (item.is_viewed ? (item.is_replied ? '已回复' : '已读') : '未读') : (item.is_viewed ? (item.is_replied ? '已回复' : '已读') : '未读')}}
         </view>
       </view>
-      <view class="note-content">
-        <text>{{getSummary(item.content)}}</text>
-      </view>
-      <view class="note-footer">
-        <text class="time">{{formatTime(item.create_time)}}</text>
-      </view>
     </view>
   </view>
 
