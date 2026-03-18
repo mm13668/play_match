@@ -122,8 +122,36 @@ exports.main = async (event, context) => {
       }
     }
 
-    // 6. 随机选择一个用户
-    const receiver = getRandomUser(candidateRes.data)
+    // 6. 随机选择一个用户，检查不能重复发给同一个用户
+    let receiver = null
+    let retryCount = 0
+    const maxRetries = 10 // 最多重试10次
+    
+    // 获取当前用户已经发送过的所有接收者
+    const sentNotesRes = await db.collection('notes')
+      .where({
+        sender_openid: OPENID
+      })
+      .get()
+    
+    // 已经发送过的接收者openid集合
+    const sentReceiverOpenids = sentNotesRes.data.map(note => note.receiver_openid)
+    
+    // 过滤掉已经发送过的用户
+    const availableCandidates = candidateRes.data.filter(
+      candidate => !sentReceiverOpenids.includes(candidate._openid)
+    )
+    
+    if (availableCandidates.length === 0) {
+      return {
+        success: false,
+        code: 'NO_AVAILABLE_CANDIDATE',
+        message: '暂时没有新的匹配对象了，你已经匹配过所有符合条件用户，请稍后再试'
+      }
+    }
+    
+    // 随机选择一个可用用户
+    receiver = getRandomUser(availableCandidates)
 
     // 7. 创建纸条记录
     const result = await db.collection('notes').add({

@@ -151,7 +151,7 @@ Page({
         this.setData({ loading: false })
         const result = res.result
 
-        if (result.success) {
+         if (result.success) {
           wx.showModal({
             title: '发送成功',
             content: `纸条已发送给${result.data.receiverNick}，等待对方回复`,
@@ -165,7 +165,7 @@ Page({
             }
           })
         } else {
-          if (result.code === 'INFO_INCOMPLETE' || result.code === 'NO_CANDIDATE' || result.code === 'NO_SHELLS' || result.code === 'CONTENT_VIOLATION') {
+          if (result.code === 'INFO_INCOMPLETE' || result.code === 'NO_CANDIDATE' || result.code === 'NO_AVAILABLE_CANDIDATE' || result.code === 'NO_SHELLS' || result.code === 'CONTENT_VIOLATION') {
             wx.showModal({
               title: '提示',
               content: result.message,
