@@ -8,10 +8,44 @@ Page({
     relationType: '1',
     historyRecords: [],
     remainingShells: 3,
-    hasUserInfo: false
+    hasUserInfo: false,
+    hearts: []
+  },
+
+  // 生成随机心形装饰
+  generateRandomHearts() {
+    const hearts = []
+    const sizes = [20, 30, 40, 50, 60]
+    
+    // 生成12-18个随机心形
+    const count = 12 + Math.floor(Math.random() * 6)
+    
+    for (let i = 0; i < count; i++) {
+      const size = sizes[Math.floor(Math.random() * sizes.length)]
+      const left = Math.random() * 100
+      const top = Math.random() * 100
+      const opacity = 0.05 + Math.random() * 0.15
+      const rotate = Math.random() * 360
+      const delay = Math.random() * 6
+      
+      hearts.push({
+        style: `
+          width: ${size}rpx;
+          height: ${size}rpx;
+          left: ${left}%;
+          top: ${top}%;
+          opacity: ${opacity};
+          transform: rotate(${rotate}deg);
+          animation-delay: ${delay}s;
+        `.replace(/\s+/g, ' ').trim()
+      })
+    }
+    
+    this.setData({ hearts })
   },
 
   onLoad: function (options) {
+    this.generateRandomHearts()
     // 检查是否从分享海报进来，如果是则给分享者增加次数
     // 使用短码方式，scene只放6位短码，查询数据库获取分享者openid
     const shareCode = options.scene || options[0]
@@ -29,15 +63,24 @@ Page({
     this.updateLastActiveTime()
   },
 
+  onPullDownRefresh: function () {
+    this.loadUserInfo()
+    this.loadHistoryRecords()
+    setTimeout(() => {
+      wx.stopPullDownRefresh()
+    }, 1000)
+  },
+
   // 加载用户信息获取已测试次数
   loadUserInfo: function() {
+    const DEFAULT_FREE_TIMES = 3
     const openid = app.getOpenid() || wx.getStorageSync('openid')
     console.log("openid",openid)
     if (!openid) {
       // 未授权登录，从缓存读取次数
       let cached = wx.getStorageSync('local_free_times')
       if (cached === '' || cached === null || typeof cached === 'undefined') {
-        cached = 3
+        cached = DEFAULT_FREE_TIMES
       }
       // 保证cached是数字
       cached = Number(cached)
@@ -65,15 +108,15 @@ Page({
         app.globalData.userInfo = user
       } else {
         this.setData({
-          remainingShells: 3,
+          remainingShells: DEFAULT_FREE_TIMES,
           hasUserInfo: true
         })
-        wx.setStorageSync('local_free_times', 3)
+        wx.setStorageSync('local_free_times', DEFAULT_FREE_TIMES)
       }
   }).catch(err => {
         console.error('加载用户信息失败', err)
         this.setData({
-          remainingShells: 3
+          remainingShells: DEFAULT_FREE_TIMES
         })
       })
   },
@@ -104,13 +147,36 @@ Page({
     })
   },
 
+  // 显示次数用完弹窗
+  showNoShellsModal: function() {
+    wx.showModal({
+      title: '免费次数已用完',
+      content: '观看广告可以获得更多免费生成机会，快去点击看广告获取吧',
+      confirmText: '去看广告',
+      cancelText: '取消',
+      success: (res) => {
+        if (res.confirm) {
+          this.onWatchAd()
+        }
+      }
+    })
+  },
+
   // 开始测试
   onStartTest: function() {
     const { person1Name, person2Name, remainingShells } = this.data
 
-    if (!person1Name || !person2Name) {
+    if (!person1Name || !person1Name.trim()) {
       wx.showToast({
-        title: '请填写两个人的姓名',
+        title: '请填写第一个人的姓名',
+        icon: 'none'
+      })
+      return
+    }
+
+    if (!person2Name || !person2Name.trim()) {
+      wx.showToast({
+        title: '请填写第二个人的姓名',
         icon: 'none'
       })
       return
@@ -118,20 +184,9 @@ Page({
 
     // 本地检查次数，如果没次数直接提示
     if (remainingShells <= 0) {
-      wx.showModal({
-        title: '免费次数已用完',
-        content: '观看广告可以获得更多免费生成机会，快去点击看广告获取吧',
-        confirmText: '去看广告',
-        cancelText: '取消',
-        success: (res) => {
-          if (res.confirm) {
-            this.onWatchAd()
-          }
-        }
-      })
+      this.showNoShellsModal()
       return
     }
-
 
     console.log("relationType",this.data.relationType )
 
@@ -143,8 +198,8 @@ Page({
     wx.cloud.callFunction({
       name: 'generateReport',
       data: {
-        person1_name: person1Name,
-        person2_name: person2Name,
+        person1_name: person1Name.trim(),
+        person2_name: person2Name.trim(),
         relation_type: this.data.relationType
       },
       success: res => {
@@ -161,17 +216,7 @@ Page({
           })
         } else {
           if (res.result.code === 'LIMIT_EXCEEDED') {
-            wx.showModal({
-              title: '免费次数已用完',
-              content: '观看广告可以获得更多免费生成机会，快去点击看广告获取吧',
-              confirmText: '看广告',
-              cancelText: '取消',
-              success: (modalRes) => {
-                if (modalRes.confirm) {
-                  this.onWatchAd()
-                }
-              }
-            })
+            this.showNoShellsModal()
           } else {
             wx.showToast({
               title: res.result.message || '生成失败，请重试',

@@ -1,8 +1,20 @@
 <!--pages/index/index.wxml-->
 <view class="container">
+  <!-- 动态背景装饰 -->
+  <view class="decoration-bg">
+    <view class="heart-item" wx:for="{{hearts}}" wx:key="index" style="{{item.style}}"></view>
+    <!-- 额外的圆形气泡装饰 -->
+    <view class="circle circle-1"></view>
+    <view class="circle circle-2"></view>
+    <view class="circle circle-3"></view>
+    <view class="circle circle-4"></view>
+    <view class="circle circle-5"></view>
+  </view>
 
+  <!-- 玻璃质感卡片容器 -->
+  <view class="content-wrap">
   <!-- 丢纸条入口 -->
-  <view class="note-card card mt-30" bindtap="onGoNote">
+  <view class="note-card card" bindtap="onGoNote">
     <view class="note-header">
       <view class="note-title">丢纸条</view>
       <view class="note-subtitle">匿名传递悄悄话 · 有缘人千里一线牵</view>
@@ -12,34 +24,34 @@
     </view>
   </view>
   <!-- 品牌区 -->
-  <view class="brand-card card text-center">
+  <view class="brand-card card text-center mt-24">
     <view class="brand-title">去玩匹配</view>
     <view class="brand-slogan text-gray">测一测你们的默契指数</view>
   </view>
 
   <!-- 测试表单 -->
-  <view class="form-card card mt-20">
+  <view class="form-card card mt-24">
     <view class="input-item">
       <van-field
         value="{{person1Name}}"
         label="第一个人"
-        placeholder="请输入姓名"
+        placeholder="例如: 张三"
         bind:input="onPerson1Input"
         maxlength="10"
       />
     </view>
 
-    <view class="input-item mt-20">
+    <view class="input-item mt-24">
       <van-field
         value="{{person2Name}}"
         label="第二个人"
-        placeholder="请输入姓名"
+        placeholder="例如: 李四"
         bind:input="onPerson2Input"
         maxlength="10"
       />
     </view>
 
-     <view class="relation-select mt-20">
+     <view class="relation-select mt-24">
        <view class="label">关系类型</view>
        <view class="relation-group">
          <view 
@@ -75,23 +87,23 @@
   </view>
 
   <!-- 剩余次数提示 -->
-  <view class="remaining-hint text-center mt-20">
+  <view class="remaining-hint text-center mt-16">
     <text class="remaining-text" wx:if="{{remainingShells > 0}}">剩余 <text class="remaining-count text-primary">{{remainingShells}}</text> 次</text>
     <text class="remaining-text" wx:if="{{remainingShells <= 0 }}">次数已用完</text>
   </view>
   
   <!-- 看广告增加次数 -->
-  <view wx:if="{{remainingShells <= 0 }}" class="text-center mt-10">
+  <view wx:if="{{remainingShells <= 0 }}" class="text-center mt-16">
     <button class="btn-ad" bindtap="onWatchAd">看广告获取次数</button>
   </view>
 
   <!-- 开始测试按钮 -->
-  <view class="mt-10">
+  <view class="mt-16">
     <button class="btn-primary" bindtap="onStartTest" disabled="{{remainingShells <= 0 }}">开始匹配测试</button>
   </view>
 
    <!-- 历史记录 -->
-   <view wx:if="{{historyRecords.length > 0}}" class="history-card card mt-30">
+   <view wx:if="{{historyRecords.length > 0}}" class="history-card card mt-32">
      <view class="history-title">最近测试记录</view>
      <view class="history-list">
         <view 
@@ -105,8 +117,11 @@
          <view class="history-score">{{item.match_score}}分</view>
        </view>
      </view>
-     <view class="text-center mt-20">
-       <button class="btn-more" bindtap="onGoMy">查看全部</button>
-     </view>
-   </view>
- </view>
+      <view class="text-center mt-20">
+        <button class="btn-more" bindtap="onGoMy">查看全部</button>
+      </view>
+    </view>
+
+  <view class="bottom-spacing"></view>
+  </view>
+  </view>

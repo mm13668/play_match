@@ -1,9 +1,8 @@
 {
   "usingComponents": {
-    "van-button": "@vant/weapp/button/index",
-    "van-cell": "@vant/weapp/cell/index",
-    "van-field": "@vant/weapp/field/index",
-    "van-radio": "@vant/weapp/radio/index",
-    "van-radio-group": "@vant/weapp/radio-group/index"
-  }
+    "van-field": "@vant/weapp/field/index"
+  },
+  "enablePullDownRefresh": true,
+  "backgroundColor": "#ffe8f0",
+  "backgroundTextStyle": "dark"
 }
