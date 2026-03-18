@@ -3,13 +3,21 @@
     <view class="avatar-item" wx:for="{{avatars}}" wx:key="index" style="{{item.style}}"></view>
   </view>
   
-  <view class="card">
-    <view class="header">
-      <text class="title">丢纸条</text>
-      <text class="subtitle">匿名传递悄悄话给有缘人</text>
-    </view>
+   <view class="card">
+     <view class="header">
+       <text class="title">丢纸条</text>
+       <text class="subtitle">匿名传递悄悄话给有缘人</text>
+     </view>
 
-    <view wx:if="{{!hasUserInfo}}" class="warning-card">
+     <view class="rules-card">
+       <view class="rules-title">📜 玩法规则</view>
+       <view class="rules-item">1. 纸条会随机匹配给其他有缘用户</view>
+       <view class="rules-item">2. 对方查看后可以匿名回复你</view>
+       <view class="rules-item">3. 内容请遵守社区规范，违规将无法发布</view>
+       <view class="rules-item">4. 每发送一张纸条消耗1个贝壳</view>
+     </view>
+
+     <view wx:if="{{!hasUserInfo}}" class="warning-card">
       <text class="warning-text">请先到个人中心完善昵称和性别信息才能丢纸条</text>
       <van-button type="primary" bindtap="goToProfile">去完善信息</van-button>
     </view>

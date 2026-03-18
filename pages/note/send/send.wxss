@@ -86,6 +86,28 @@
   line-height: 1.5;
 }
 
+.rules-card {
+  background: #fff8f8;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  margin-bottom: 30rpx;
+  border: 1rpx solid #ffe0e0;
+}
+
+.rules-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #FF6B6B;
+  margin-bottom: 16rpx;
+}
+
+.rules-item {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.8;
+  padding-left: 4rpx;
+}
+
 .info-row {
   display: flex;
   align-items: center;
