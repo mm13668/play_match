@@ -1,5 +1,5 @@
 .container {
-  padding: 20rpx;
+  padding: 0;
   min-height: 100vh;
   background: linear-gradient(180deg, #ffeef0 0%, #ffd6e0 100%);
   position: relative;
@@ -11,7 +11,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 40vh;
+  height: 100vh;
   overflow: hidden;
   z-index: 0;
   pointer-events: none;
@@ -23,6 +23,22 @@
   background: rgba(255, 255, 255, 0.6);
   border: 4rpx solid rgba(255, 107, 107, 0.3);
   box-shadow: 0 4rpx 12rpx rgba(255, 107, 107, 0.2);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-10rpx, -10rpx);
+  }
+  50% {
+    transform: translate(5rpx, -20rpx);
+  }
+  75% {
+    transform: translate(10rpx, -10rpx);
+  }
 }
 
 .card {
@@ -32,7 +48,7 @@
   box-shadow: 0 8rpx 32rpx rgba(255, 107, 107, 0.15);
   position: relative;
   z-index: 1;
-  margin-top: 40rpx;
+  margin: 20rpx;
   backdrop-filter: blur(10rpx);
 }
 

@@ -70,6 +70,10 @@
   margin-top: 32rpx;
 }
 
+.mt-48 {
+  margin-top: 48rpx;
+}
+
 .text-center {
   text-align: center;
 }
@@ -433,47 +437,90 @@
 /* 丢纸条入口卡片 */
 .note-card {
   padding: 36rpx;
-  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+  background: linear-gradient(135deg, #ff9a9e 0%, #FF8A8A 50%, #ffccbc 100%);
   background-size: 200% 200%;
   border-radius: 28rpx;
   color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 12rpx 36rpx rgba(255, 154, 158, 0.3);
+  box-shadow: 0 12rpx 36rpx rgba(255, 107, 107, 0.25);
   animation: noteGlow 8s ease infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.note-bg-bubbles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 28rpx;
+}
+
+.bubble-item {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  animation: bubbleFloat 4s ease-in-out infinite;
+}
+
+@keyframes bubbleFloat {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-8rpx, -8rpx);
+  }
+  50% {
+    transform: translate(4rpx, -16rpx);
+  }
+  75% {
+    transform: translate(8rpx, -8rpx);
+  }
 }
 
 @keyframes noteGlow {
-  0% { background-position: 0% 50%; box-shadow: 0 12rpx 36rpx rgba(255, 154, 158, 0.3); }
-  50% { background-position: 100% 50%; box-shadow: 0 16rpx 48rpx rgba(255, 154, 158, 0.4); }
-  100% { background-position: 0% 50%; box-shadow: 0 12rpx 36rpx rgba(255, 154, 158, 0.3); }
+  0% { background-position: 0% 50%; box-shadow: 0 12rpx 36rpx rgba(255, 107, 107, 0.3); }
+  50% { background-position: 100% 50%; box-shadow: 0 16rpx 48rpx rgba(255, 107, 107, 0.4); }
+  100% { background-position: 0% 50%; box-shadow: 0 12rpx 36rpx rgba(255, 107, 107, 0.3); }
+}
+
+.note-header {
+  position: relative;
+  z-index: 1;
 }
 
 .note-header .note-title {
   font-size: 36rpx;
   font-weight: bold;
-  color: #c42a2a;
+  color: #ffffff;
   margin-bottom: 8rpx;
-  text-shadow: 0 1rpx 4rpx rgba(255, 255, 255, 0.6);
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.15);
 }
 
 .note-header .note-subtitle {
   font-size: 26rpx;
-  color: rgba(173, 38, 38, 0.75);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .note-tag {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.25);
   padding: 10rpx 20rpx;
   border-radius: 30rpx;
-  border: 2rpx solid rgba(196, 42, 42, 0.3);
+  border: 2rpx solid rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(10rpx);
+  position: relative;
+  z-index: 1;
 }
 
 .note-tag text {
   font-size: 24rpx;
-  color: #c42a2a;
+  color: rgba(255, 255, 255, 0.85);
   font-weight: 500;
 }
 

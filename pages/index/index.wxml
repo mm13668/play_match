@@ -13,16 +13,19 @@
 
   <!-- 玻璃质感卡片容器 -->
   <view class="content-wrap">
-  <!-- 丢纸条入口 -->
-  <view class="note-card card" bindtap="onGoNote">
-    <view class="note-header">
-      <view class="note-title">丢纸条</view>
-      <view class="note-subtitle">匿名传递悄悄话 · 有缘人千里一线牵</view>
-    </view>
-    <view class="note-tag">
-      <text>消耗1贝壳</text>
-    </view>
-  </view>
+   <!-- 丢纸条入口 -->
+   <view class="note-card card" bindtap="onGoNote">
+     <view class="note-bg-bubbles">
+       <view class="bubble-item" wx:for="{{bubbles}}" wx:key="index" style="{{item.style}}"></view>
+     </view>
+     <view class="note-header">
+       <view class="note-title">丢纸条</view>
+       <view class="note-subtitle">匿名传递悄悄话 · 有缘人千里一线牵</view>
+     </view>
+     <view class="note-tag">
+       <text>消耗1贝壳</text>
+     </view>
+   </view>
   <!-- 品牌区 -->
   <view class="brand-card card text-center mt-24">
     <view class="brand-title">去玩匹配</view>
@@ -97,13 +100,13 @@
     <button class="btn-ad" bindtap="onWatchAd">看广告获取次数</button>
   </view>
 
-  <!-- 开始测试按钮 -->
-  <view class="mt-16">
-    <button class="btn-primary" bindtap="onStartTest" disabled="{{remainingShells <= 0 }}">开始匹配测试</button>
-  </view>
+   <!-- 开始测试按钮 -->
+   <view class="mt-16">
+     <button class="btn-primary" bindtap="onStartTest" disabled="{{remainingShells <= 0 }}">开始匹配测试</button>
+   </view>
 
-   <!-- 历史记录 -->
-   <view wx:if="{{historyRecords.length > 0}}" class="history-card card mt-32">
+    <!-- 历史记录 -->
+    <view wx:if="{{historyRecords.length > 0}}" class="history-card card mt-48">
      <view class="history-title">最近测试记录</view>
      <view class="history-list">
         <view 

@@ -18,8 +18,8 @@ Page({
     const avatars = []
     const colors = ['#FFB6C1', '#FFC0CB', '#FFA07A', '#FFDAB9', '#FFE4E1', '#F08080', '#FA8072', '#FF6B6B']
     
-    // 生成20-30个随机头像
-    const count = 20 + Math.floor(Math.random() * 10)
+    // 生成40-50个随机头像
+    const count = 40 + Math.floor(Math.random() * 11)
     
     for (let i = 0; i < count; i++) {
       const size = 40 + Math.floor(Math.random() * 80)
@@ -27,6 +27,8 @@ Page({
       const bottom = Math.random() * 100
       const color = colors[Math.floor(Math.random() * colors.length)]
       const opacity = 0.3 + Math.random() * 0.4
+      const duration = 3 + Math.random() * 4 // 3-7秒不同动画时长
+      const delay = Math.random() * 3 // 0-3秒不同延迟
       
       avatars.push({
         style: `
@@ -36,7 +38,8 @@ Page({
           bottom: ${bottom}%;
           background: ${color};
           opacity: ${opacity};
-          transform: translateY(${Math.random() * 40 - 20}rpx);
+          animation-duration: ${duration}s;
+          animation-delay: -${delay}s;
         `.replace(/\s+/g, ' ').trim()
       })
     }

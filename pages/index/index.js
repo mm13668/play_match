@@ -9,7 +9,38 @@ Page({
     historyRecords: [],
     remainingShells: 3,
     hasUserInfo: false,
-    hearts: []
+    hearts: [],
+    bubbles: []
+  },
+
+  // 生成随机气泡装饰
+  generateRandomBubbles() {
+    const bubbles = []
+    // 生成15-20个随机气泡
+    const count = 15 + Math.floor(Math.random() * 6)
+    
+    for (let i = 0; i < count; i++) {
+      const size = 20 + Math.floor(Math.random() * 60)
+      const left = Math.random() * 100
+      const top = Math.random() * 100
+      const opacity = 0.1 + Math.random() * 0.2
+      const duration = 3 + Math.random() * 3
+      const delay = Math.random() * 3
+      
+      bubbles.push({
+        style: `
+          width: ${size}rpx;
+          height: ${size}rpx;
+          left: ${left}%;
+          top: ${top}%;
+          opacity: ${opacity};
+          animation-duration: ${duration}s;
+          animation-delay: -${delay}s;
+        `.replace(/\s+/g, ' ').trim()
+      })
+    }
+    
+    this.setData({ bubbles })
   },
 
   // 生成随机心形装饰
@@ -46,6 +77,7 @@ Page({
 
   onLoad: function (options) {
     this.generateRandomHearts()
+    this.generateRandomBubbles()
     // 检查是否从分享海报进来，如果是则给分享者增加次数
     // 使用短码方式，scene只放6位短码，查询数据库获取分享者openid
     const shareCode = options.scene || options[0]
