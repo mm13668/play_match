@@ -11,7 +11,7 @@
 
      <view class="rules-card">
        <view class="rules-title">📜 玩法规则</view>
-       <view class="rules-item">1. 纸条会随机匹配给其他有缘用户</view>
+       <view class="rules-item">1. 纸条会随机匹配给其他异性有缘用户</view>
        <view class="rules-item">2. 对方查看后可以匿名回复你</view>
        <view class="rules-item">3. 内容请遵守社区规范，违规将无法发布</view>
        <view class="rules-item">4. 每发送一张纸条消耗1个贝壳</view>
