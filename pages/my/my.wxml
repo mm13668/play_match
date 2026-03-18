@@ -10,10 +10,10 @@
             <image class="avatar" src="{{userInfo.avatar || userInfo.avatar}}"></image>
          </view>
         <view wx:else class="avatar default-avatar"></view>
-        <view class="user-info-text">
-           <view class="nickname">{{userInfo.nickname || userInfo.nickname || '微信用户'}}</view>
-          <view class="stats">共 {{totalShells}} 个 🐚</view>
-        </view>
+         <view class="user-info-text">
+            <view class="nickname">{{userInfo.nickname || userInfo.nickname || '微信用户'}}</view>
+           <view class="stats">剩余贝壳 <text class="shell-count">{{totalShells}}</text> 个</view>
+         </view>
          <view class="arrow-icon">
            <view class="arrow"></view>
          </view>
@@ -43,6 +43,7 @@
         <van-cell title="关于我们" is-link bindclick="onAbout" />
         <van-cell title="退出登录" is-link bindclick="onLogout" wx:if="{{hasUserInfo}}" />
       </van-cell-group>
-    </view>
+     </view>
 
-</view>
+  <view class="bottom-spacing"></view>
+ </view>
