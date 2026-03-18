@@ -9,11 +9,44 @@ Page({
     loading: false,
     hasUserInfo: false,
     userInfo: null,
-    remainingShells: 0
+    remainingShells: 0,
+    avatars: []
+  },
+
+  // 生成随机头像位置
+  generateRandomAvatars() {
+    const avatars = []
+    const colors = ['#FFB6C1', '#FFC0CB', '#FFA07A', '#FFDAB9', '#FFE4E1', '#F08080', '#FA8072', '#FF6B6B']
+    
+    // 生成20-30个随机头像
+    const count = 20 + Math.floor(Math.random() * 10)
+    
+    for (let i = 0; i < count; i++) {
+      const size = 40 + Math.floor(Math.random() * 80)
+      const left = Math.random() * 100
+      const bottom = Math.random() * 100
+      const color = colors[Math.floor(Math.random() * colors.length)]
+      const opacity = 0.3 + Math.random() * 0.4
+      
+      avatars.push({
+        style: `
+          width: ${size}rpx;
+          height: ${size}rpx;
+          left: ${left}%;
+          bottom: ${bottom}%;
+          background: ${color};
+          opacity: ${opacity};
+          transform: translateY(${Math.random() * 40 - 20}rpx);
+        `.replace(/\s+/g, ' ').trim()
+      })
+    }
+    
+    this.setData({ avatars })
   },
 
   onLoad() {
     this.checkUserInfo()
+    this.generateRandomAvatars()
   },
 
   onShow() {
@@ -195,6 +228,13 @@ Page({
           this.watchAd()
         }
       }
+    })
+  },
+
+  // 去完善信息
+  goToProfile() {
+    wx.switchTab({
+      url: '/pages/my/my'
     })
   },
 

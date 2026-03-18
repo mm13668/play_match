@@ -1,4 +1,8 @@
 <view class="container">
+  <view class="background-pool">
+    <view class="avatar-item" wx:for="{{avatars}}" wx:key="index" style="{{item.style}}"></view>
+  </view>
+  
   <view class="card">
     <view class="header">
       <text class="title">丢纸条</text>
