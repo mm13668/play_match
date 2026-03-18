@@ -153,24 +153,26 @@ exports.main = async (event, context) => {
     // 随机选择一个可用用户
     receiver = getRandomUser(availableCandidates)
 
-    // 7. 创建纸条记录
-    const result = await db.collection('notes').add({
-      data: {
-        sender_openid: OPENID,
-        sender_nick: currentUser.nickname,
-        sender_gender: currentUser.gender,
-        content: content,
-        require_gender: targetGender,
-        receiver_openid: receiver._openid,
-        create_time: new Date(),
-        is_viewed: false,
-        is_replied: false,
-        reply_content: '',
-        reply_openid: '',
-        reply_time: null,
-        match_report_generated: false
-      }
-    })
+     // 7. 创建纸条记录
+     const result = await db.collection('notes').add({
+       data: {
+         sender_openid: OPENID,
+         sender_nick: currentUser.nickname,
+         sender_gender: currentUser.gender,
+         content: content,
+         require_gender: targetGender,
+         receiver_openid: receiver._openid,
+         receiver_nick: receiver.nickname,
+         receiver_gender: receiver.gender,
+         create_time: new Date(),
+         is_viewed: false,
+         is_replied: false,
+         reply_content: '',
+         reply_openid: '',
+         reply_time: null,
+         match_report_generated: false
+       }
+     })
 
     // 8. 增加发送者的total_used（扣贝壳）
     await db.collection('user').doc(currentUser._id).update({

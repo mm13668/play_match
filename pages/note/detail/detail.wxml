@@ -1,20 +1,28 @@
 <view class="container">
+  <view class="background-pool">
+    <view class="bubble-item" wx:for="{{bubbles}}" wx:key="index" style="{{item.style}}"></view>
+  </view>
   <van-loading wx:if="{{loading}}" size="24px" vertical>加载中...</van-loading>
 
   <view wx:if="{{!loading && note}}" class="content">
-    <!-- 纸条信息卡片 -->
-    <view class="card">
-      <view class="sender-info">
-        <text class="label">发送者</text>
-        <text class="value">{{note.sender_nick}} ({{getGenderText(note.sender_gender)}})</text>
-      </view>
+     <!-- 纸条信息卡片 -->
+     <view class="card">
+       <view class="sender-info">
+         <text class="label">发送者</text>
+         <text class="value">{{note.sender_nick}}</text>
+       </view>
 
-      <view class="time-info">
-        <text class="label">发送时间</text>
-        <text class="value">{{note.create_time_formatted}}</text>
-      </view>
+       <view class="receiver-info" wx:if="{{note.receiver_nick}}">
+         <text class="label">接收者</text>
+         <text class="value">{{note.receiver_nick}}</text>
+       </view>
 
-      <view class="divider"></view>
+       <view class="time-info">
+         <text class="label">发送时间</text>
+         <text class="value">{{note.create_time_formatted}}</text>
+       </view>
+
+       <view class="divider"></view>
 
       <view class="note-content">
         <text class="content-label">纸条内容</text>
@@ -55,17 +63,17 @@
     </view>
 
     <!-- 生成匹配报告入口 -->
-    <view wx:if="{{note.is_viewed}}" class="action-card match-card">
-      <text class="tip">和对方生成情侣匹配报告，看看你们的默契度</text>
-      <van-button 
-        type="success" 
-        block 
-        loading="{{generatingMatch}}"
-        disabled="{{remainingShells <= 0}}"
-        bindtap="onGenerateMatch"
-      >
-        生成情侣匹配报告（消耗1贝壳）
-      </van-button>
+     <view wx:if="{{note.is_viewed}}" class="action-card match-card">
+       <text class="tip">和对方生成情侣匹配报告，看看你们的默契度</text>
+       <van-button 
+         type="primary" 
+         block 
+         loading="{{generatingMatch}}"
+         disabled="{{remainingShells <= 0}}"
+         bindtap="onGenerateMatch"
+       >
+         生成情侣匹配报告（消耗1贝壳）
+       </van-button>
       <view wx:if="{{remainingShells <= 0}}" class="ad-tip">
         <text>没有贝壳了，观看广告获得贝壳吧</text>
         <van-button type="default" bindtap="watchAd" size="small">观看广告</van-button>
@@ -106,6 +114,7 @@
           发送回复
         </van-button>
       </view>
-    </van-popup>
-  </view>
-</view>
+     </van-popup>
+   </view>
+   <view class="bottom-spacing"></view>
+ </view>

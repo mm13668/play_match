@@ -22,7 +22,7 @@
       <view class="note-header">
         <view class="sender">
           <text wx:if="{{activeTab === 'received'}}">来自: {{item.sender_nick}}</text>
-          <text wx:if="{{activeTab === 'sent'}}">发给: 有缘人</text>
+          <text wx:if="{{activeTab === 'sent'}}">发给: {{item.receiver_nick}}</text>
         </view>
         <view class="status {{activeTab === 'received' && !item.is_viewed ? 'unread' : ''}}">
           {{activeTab === 'received' ? (item.is_viewed ? (item.is_replied ? '已回复' : '已读') : '未读') : (item.is_viewed ? (item.is_replied ? '已回复' : '已读') : '未读')}}

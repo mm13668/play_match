@@ -14,10 +14,42 @@ Page({
     remainingCount: 200,
     replying: false,
     generatingMatch: false,
-    remainingShells: 0
+    remainingShells: 0,
+    bubbles: []
+  },
+
+  // 生成随机气泡装饰
+  generateRandomBubbles() {
+    const bubbles = []
+    // 生成20-30个随机气泡
+    const count = 20 + Math.floor(Math.random() * 11)
+    
+    for (let i = 0; i < count; i++) {
+      const size = 30 + Math.floor(Math.random() * 80)
+      const left = Math.random() * 100
+      const bottom = Math.random() * 100
+      const opacity = 0.2 + Math.random() * 0.3
+      const duration = 3 + Math.random() * 4
+      const delay = Math.random() * 3
+      
+      bubbles.push({
+        style: `
+          width: ${size}rpx;
+          height: ${size}rpx;
+          left: ${left}%;
+          bottom: ${bottom}%;
+          opacity: ${opacity};
+          animation-duration: ${duration}s;
+          animation-delay: -${delay}s;
+        `.replace(/\s+/g, ' ').trim()
+      })
+    }
+    
+    this.setData({ bubbles })
   },
 
   onLoad(options) {
+    this.generateRandomBubbles()
     if (options.noteId) {
       this.setData({
         noteId: options.noteId
